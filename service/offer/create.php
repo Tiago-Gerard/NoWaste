@@ -1,4 +1,12 @@
 <?php
+/*
+	Projet:			NoWaste - Projet réalisé dans le cadre du TPI
+	
+	Page: 			create.php
+	Description:            Crée une offre avec les données envoyer en post
+	
+	Auteur:			Tiago Gerard
+*/
 if(filter_has_var(INPUT_POST,"numero")){
      ///numero de téléphone
     $numero = $_SERVER['PHP_AUTH_USER'];

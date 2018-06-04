@@ -37,7 +37,8 @@ function getOffer($id){
     $request = $db->prepare("SELECT * FROM `Offre` WHERE idOffre=:idOffre");
     $request->bindParam(':idOffre',$id);
     $request->execute();
-    $data = $request->fetchAll(PDO::FETCH_ASSOC);	
+    $data = $request->fetchAll(PDO::FETCH_ASSOC);
+    return $data;
 }
 
 

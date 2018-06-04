@@ -1,4 +1,12 @@
 <?php
+/*
+	Projet:			NoWaste - Projet réalisé dans le cadre du TPI
+	
+	Page: 			update.php
+	Description:            Crée un nouvelle utilisateur avec les données envoyer en post
+	
+	Auteur:			Tiago Gerard
+*/
 if(filter_has_var(INPUT_POST,"numero")){
     $numero = filter_has_var(INPUT_POST, 'numero');
     $prenom = filter_has_var(INPUT_POST, 'prenom');
