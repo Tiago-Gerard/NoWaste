@@ -1,4 +1,5 @@
 <?php
+static $requestUpdate=null;
 include '../functions.inc.php';
 if(filter_has_var(INPUT_POST,"idUtilisateur")){
     ///numero de téléphone
@@ -17,14 +18,17 @@ if(filter_has_var(INPUT_POST,"idUtilisateur")){
 }
 
 function update($idUtilisateur,$nom,$prenom,$numero,$email){
-    $db = getDB();
-    $request = $db->prepare("UPDATE `Utilisateur` SET `idUtilisateur`=[:idUtilisateur],`nom`=[:nom],`prenom`=[:prenom],`numero`=[:numero],`email`=[:email] WHERE idUtilisateur = :idUtilisateur");
-    $request->bindParam(':email',$email,PDO::PARAM_STR);
-    $request->bindParam(':nom',$nom,PDO::PARAM_STR);
-    $request->bindParam(':prenom',$prenom,PDO::PARAM_STR);
-    $request->bindParam(':numeros',$numero,PDO::PARAM_STR);
-    $request->bindParam(':idUtilisateur',$idUtilisateur,PDO::PARAM_STR);
-    $request->execute();    
+    if($requestUpdate==NULL){
+        $db = getDB();
+    $requestUpdate = $db->prepare("UPDATE `Utilisateur` SET `idUtilisateur`=[:idUtilisateur],`nom`=[:nom],`prenom`=[:prenom],`numero`=[:numero],`email`=[:email] WHERE idUtilisateur = :idUtilisateur");
+    
+    }
+    $requestUpdate->bindParam(':email',$email,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':nom',$nom,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':prenom',$prenom,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':numeros',$numero,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':idUtilisateur',$idUtilisateur,PDO::PARAM_STR);
+    $requestUpdate->execute();    
     
     
 }

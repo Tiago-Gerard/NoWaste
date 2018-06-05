@@ -9,6 +9,8 @@
 */
 
 include '../functions.inc.php';
+//La requette preparée sous forme d'un singleton
+static $requestUpdate=NULL;
 if(filter_has_var(INPUT_POST,"idOffre")){
     ///numero de téléphone
     $numero = $_SERVER['PHP_AUTH_USER'];
@@ -27,20 +29,22 @@ if(filter_has_var(INPUT_POST,"idOffre")){
     }
     
 }
-static $requestUpdate=NULL;
-if($requestUpdate=null){
-    $requestUpdate = $db->prepare("UPDATE `Utilisateur` SET `idUtilisateur`=[:idUtilisateur],`nom`=[:nom],`prenom`=[:prenom],`numero`=[:numero],`email`=[:email] WHERE idUtilisateur = :idUtilisateur");
-}
+
+
 
 function update($idUtilisateur,$nom,$prenom,$numero,$email){
+    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
+    if($requestUpdate=null){
     $db = getDB();
+    $requestUpdate = $db->prepare("UPDATE `Utilisateur` SET `idUtilisateur`=[:idUtilisateur],`nom`=[:nom],`prenom`=[:prenom],`numero`=[:numero],`email`=[:email] WHERE idUtilisateur = :idUtilisateur");
+}
     
-    $request->bindParam(':email',$email,PDO::PARAM_STR);
-    $request->bindParam(':nom',$nom,PDO::PARAM_STR);
-    $request->bindParam(':prenom',$prenom,PDO::PARAM_STR);
-    $request->bindParam(':numeros',$numero,PDO::PARAM_STR);
-    $request->bindParam(':idUtilisateur',$idUtilisateur,PDO::PARAM_STR);
-    $request->execute();    
+    $requestUpdate->bindParam(':email',$email,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':nom',$nom,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':prenom',$prenom,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':numeros',$numero,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':idUtilisateur',$idUtilisateur,PDO::PARAM_STR);
+    $requestUpdate->execute();    
     
     
 }

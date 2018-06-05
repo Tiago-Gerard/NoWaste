@@ -7,6 +7,8 @@
 	
 	Auteur:			Tiago Gerard
 */
+//La requette preparée sous forme d'un singleton
+static $requestCreate=NULL;
 if(filter_has_var(INPUT_POST,"numero")){
     $numero = filter_has_var(INPUT_POST, 'numero');
     $prenom = filter_has_var(INPUT_POST, 'prenom');
@@ -17,8 +19,11 @@ if(filter_has_var(INPUT_POST,"numero")){
 }
 
 function create($idUtilisateur,$nom,$prenom,$numero,$email){
-    $db = getDB();
-    $request = $db->prepare("INSERT INTO `Utilisateur`(`nom`, `prenom`, `numero`, `email`) VALUES (:nom,:prenom,:numero,:email)");
+    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
+    if($requestCreate==NULL){
+       $db = getDB();
+       $request = $db->prepare("INSERT INTO `Utilisateur`(`nom`, `prenom`, `numero`, `email`) VALUES (:nom,:prenom,:numero,:email)");     
+    }
     $request->bindParam(':email',$email,PDO::PARAM_STR);
     $request->bindParam(':nom',$nom,PDO::PARAM_STR);
     $request->bindParam(':prenom',$prenom,PDO::PARAM_STR);

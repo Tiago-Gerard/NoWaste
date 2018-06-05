@@ -11,6 +11,8 @@
 // Require du PDO
 require "../pdo.php";
 
+//La requette preparée sous forme d'un singleton
+static $requestGetUser=NULL;
 /*
 	Classe pour modéliser une école 
 	
@@ -30,8 +32,12 @@ class Utilisateur{
 
 // Retourne toutes les écoles en Json
 function getUser($numero,$pwd){
-    $db = getDB();
-    $request = $db->prepare("SELECT * FROM `Utilisateur` WHERE numero=:numero");
+    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
+    if($requestGetUser){
+        $db = getDB();
+        $request = $db->prepare("SELECT * FROM `Utilisateur` WHERE numero=:numero");
+    }
+   
     $request->bindParam(':numero',$numero,PDO::PARAM_STR);
     $request->execute();    
     $data = $request->fetchAll(PDO::FETCH_ASSOC);
