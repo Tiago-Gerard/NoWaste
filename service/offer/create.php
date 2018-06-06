@@ -15,13 +15,13 @@ if(filter_has_var(INPUT_POST,"lienPhoto")){
     ///numero + salage en sha1
     $pass = $_SERVER['PHP_AUTH_PW'];
     if(login($numero, $pass)){       
-        $lienPhoto = filter_has_var(INPUT_POST, 'lienPhoto');
-        $description = filter_has_var(INPUT_POST, 'description');
-        $datePeremption = filter_has_var(INPUT_POST, 'datePetemption');
-        $idUtilisateur = filter_has_var(INPUT_POST, 'idUtilisateur');
-        $idType = filter_has_var(INPUT_POST, 'idType');
-        $latitude = filter_has_var(INPUT_POST, 'latitude');
-        $longitude = filter_has_var(INPUT_POST, 'longitude');
+        $lienPhoto = filter_input(INPUT_POST, 'lienPhoto');
+        $description = filter_input(INPUT_POST, 'description');
+        $datePeremption = filter_input(INPUT_POST, 'datePetemption');
+        $idUtilisateur = filter_input(INPUT_POST, 'idUtilisateur');
+        $idType = filter_input(INPUT_POST, 'idType');
+        $latitude = filter_input(INPUT_POST, 'latitude');
+        $longitude = filter_input(INPUT_POST, 'longitude');
         create($nom,$prenom,$numero,$email);
     }
 }
