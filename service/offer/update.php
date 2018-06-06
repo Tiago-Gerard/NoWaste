@@ -13,39 +13,41 @@ include '../functions.inc.php';
 static $requestUpdate=NULL;
 if(filter_has_var(INPUT_POST,"idOffre")){
     ///numero de téléphone
-    $numero = $_SERVER['PHP_AUTH_USER'];
+    //$numero = $_SERVER['PHP_AUTH_USER'];
     ///numero + salage en sha1
-    $pass = $_SERVER['PHP_AUTH_PW'];
-    if(login($numero, $pass)){
+    //$pass = $_SERVER['PHP_AUTH_PW'];
+    //if(login($numero, $pass)){
         
-        $idUtilisateur = filter_has_var(INPUT_POST,'idOffre');
-        $idUtilisateur = filter_has_var(INPUT_POST,'lienPhoto');
-        $idUtilisateur = filter_has_var(INPUT_POST,'description');
-        $idUtilisateur = filter_has_var(INPUT_POST,'datePeremption');
-        $idUtilisateur = filter_has_var(INPUT_POST,'idUtilisateur');
-        $idUtilisateur = filter_has_var(INPUT_POST,'Type');
-        $idUtilisateur = filter_has_var(INPUT_POST,'latitude');
-        update($idUtilisateur,$nom,$prenom,$numero,$email);
-    }
+        $idUtilisateur = filter_input(INPUT_POST,'idOffre');
+        $lienPhoto = filter_input(INPUT_POST,'lienPhoto');
+        $description = filter_input(INPUT_POST,'description');
+        $datePeremption = filter_input(INPUT_POST,'datePeremption');
+        $idUtilisateur = filter_input(INPUT_POST,'idUtilisateur');
+        $idType = filter_input(INPUT_POST,'idType');
+        $latitude = filter_input(INPUT_POST,'latitude');
+        $longitude = filter_input(INPUT_POST,'longitude');
+        
+        update($nom,$prenom,$numero,$email);
+    //}
     
 }
 
 
 
-function update($idUtilisateur,$nom,$prenom,$numero,$email){
+function update($lienPhoto,$description,$datePeremption,$idType,$idPosition){
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requestUpdate=null){
     $db = getDB();
-    $requestUpdate = $db->prepare("UPDATE `Utilisateur` SET `idUtilisateur`=[:idUtilisateur],`nom`=[:nom],`prenom`=[:prenom],`numero`=[:numero],`email`=[:email] WHERE idUtilisateur = :idUtilisateur");
+    $requestUpdate = $db->prepare("UPDATE `Offre` "
+            . "SET `lienPhoto`=:lienPhoto,`description`=:description,`datePeremption`=:datePeremption,`idType`=:idType,`idPosition`=:idPosition "
+            . "WHERE `idOffre`=:idOffre");
 }
     
-    $requestUpdate->bindParam(':email',$email,PDO::PARAM_STR);
-    $requestUpdate->bindParam(':nom',$nom,PDO::PARAM_STR);
-    $requestUpdate->bindParam(':prenom',$prenom,PDO::PARAM_STR);
-    $requestUpdate->bindParam(':numeros',$numero,PDO::PARAM_STR);
-    $requestUpdate->bindParam(':idUtilisateur',$idUtilisateur,PDO::PARAM_STR);
-    $requestUpdate->execute();    
-    
-    
+    $requestUpdate->bindParam(':lienPhoto',$lienPhoto,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':description',$description,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':datePeremption',$datePeremption,PDO::PARAM_STR);
+    $requestUpdate->bindParam(':idType',$idType,PDO::PARAM_INT);
+    $requestUpdate->bindParam(':idPosition',$idPosition,PDO::PARAM_INT);
+    $requestUpdate->execute();       
 }
 

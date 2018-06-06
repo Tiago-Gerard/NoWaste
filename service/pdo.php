@@ -16,7 +16,6 @@ DEFINE('DBNAME', "nowaste");
 static $pdo = null;
 header("Content-Type: application/json; charset=UTF-8");
 
-var_dump(getDB());
 // Connexion à la base de données
 function getDB(){
     if(is_null($pdo)){
@@ -29,5 +28,4 @@ function getDB(){
     }}
     return $pdo;
 }
-?>
 

@@ -9,11 +9,12 @@
 */
 
 // Require du PDO
-require "../pdo.php";
+//require "../pdo.php";
 
 //Les requettes preparées sous forme d'un singleton
 static $requestLogin = NULL;
 static $requestGetOffer=NULL;
+static $requettteImage=NULL;
 
 // Identifie si la si les headers envoyer avec la requette HTTP sont correcte
 function login($numero,$pwd){
@@ -49,7 +50,18 @@ function getOffer($id){
     $data = $request->fetchAll(PDO::FETCH_ASSOC);
     return $data;
 }
-
+//
+function verifieChangementImage($lien,$idOffre)
+{
+    if($requetteImage==NULL){
+        $db = getDB();
+        $requetteImage = $db->prepare("SELECT `lienPhoto`FROM `Offre` WHERE `idOffre`=:idOffre");
+    }
+    $requetteImage->bindParam(':idOffre', $idOffre);
+    $requetteImage->execute();
+    $data = $requetteImage->fetchAll(PDO::FETCH_ASSOC);
+    return ($data['lienPhoto']==$lien);
+}
 
 
 

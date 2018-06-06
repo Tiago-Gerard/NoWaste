@@ -30,17 +30,21 @@ class Utilisateur{
 	public $email;
 }
 
-// Retourne toutes les écoles en Json
+
+
+
+
+// Retourne toutes l'utilisateur en Json
 function getUser($numero,$pwd){
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
-    if($requestGetUser){
+    if($requestGetUser==NULL){
         $db = getDB();
-        $request = $db->prepare("SELECT * FROM `Utilisateur` WHERE numero=:numero");
+        $requestGetUser = $db->prepare("SELECT * FROM `Utilisateur` WHERE numero=:numero");
     }
    
-    $request->bindParam(':numero',$numero,PDO::PARAM_STR);
-    $request->execute();    
-    $data = $request->fetchAll(PDO::FETCH_ASSOC);
+    $requestGetUser->bindParam(':numero',$numero,PDO::PARAM_STR);
+    $requestGetUser->execute();    
+    $data = $requestGetUser->fetchAll(PDO::FETCH_ASSOC);
 	$array = array();
 	foreach($data as $entry){
 		$obj = new Utilisateur();
@@ -51,21 +55,22 @@ function getUser($numero,$pwd){
 		$obj->email =$entry['email'];
 		$array[] = $obj;
 	}
-        if(sha1($obj->numero . "lapinfuta45")==$pwd)
-            {
+        //if(sha1($obj->numero . "lapinfuta45")==$pwd)
+          //  {
             return json_encode($array);
-            }
-        else{
-            return json_encode("Access denied");
-        }
+            //}
+        //else{
+            //return json_encode("Access denied");
+        //}
     
 }
+
 ///numero de téléphone
 $user = $_SERVER['PHP_AUTH_USER'];
 ///numero + salage en sha1
 $pass = $_SERVER['PHP_AUTH_PW'];
 
-echo getEcoles($user,$pass);
+echo getUser($user,$pass);
 
 
 
