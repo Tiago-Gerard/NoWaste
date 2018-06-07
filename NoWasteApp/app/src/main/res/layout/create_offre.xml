@@ -19,8 +19,8 @@
         android:layout_width="212dp"
         android:layout_height="52dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:dropDownWidth="dat" />
+        android:layout_alignParentTop="true"/>
+        //android:dropDownWidth="dat" />
 
     <EditText
         android:id="@+id/editDate"

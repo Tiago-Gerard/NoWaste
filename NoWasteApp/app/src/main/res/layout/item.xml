@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:orientation="vertical"
+    app:cardCornerRadius="5dp"
+    app:cardElevation="0dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/txvDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/imgOffre"
+            android:layout_alignParentTop="true"
+            android:text="300m"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/txvNum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/txvDistance"
+            android:text="0791931253"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/txvDate"
+            android:layout_width="99dp"
+            android:layout_height="wrap_content"
+            android:layout_alignEnd="@+id/txvDistance"
+            android:layout_alignParentBottom="true"
+            android:text="08-04-2018"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/txvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Jamal Albadri"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/imgOffre"
+            android:layout_width="300dp"
+            android:layout_height="150dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="58dp" />
+            //app:srcCompat="#89747b" />
+
+        <TextView
+            android:id="@+id/txvDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="54dp"
+            android:layout_above="@+id/txvDate"
+            android:layout_alignParentStart="true"
+            android:text="I've got some tomatoes still available 2 days feel free to come take them i give it free" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
