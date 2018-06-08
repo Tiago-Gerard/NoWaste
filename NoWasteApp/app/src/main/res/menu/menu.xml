@@ -3,9 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_save"
-        android:icon="@android:drawable/ic_menu_add"
-        android:title="new"
-        app:showAsAction="ifRoom" />
-
+        android:id="@+id/filter"
+        android:title="Filtrer Offre" />
+    <item
+        android:id="@+id/create_offer"
+        android:title="Crée une offre" />
+    <item
+        android:id="@+id/change_acc"
+        android:title="Changer mon compte" />
 </menu>

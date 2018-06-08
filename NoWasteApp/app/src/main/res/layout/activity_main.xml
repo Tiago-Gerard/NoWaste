@@ -81,6 +81,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:text="Ok"
+            android:onClick="Onclick"
             tools:layout_editor_absoluteX="155dp"
             tools:layout_editor_absoluteY="401dp" />
     </LinearLayout>
