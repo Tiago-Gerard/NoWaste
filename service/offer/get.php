@@ -32,7 +32,14 @@ class Offre{
         public $distance;
         public $contact;
 }
+if(filter_has_var(INPUT_SERVER,'PHP_AUTH_USER')){
+    ///numero de téléphone
+    $user = $_SERVER['PHP_AUTH_USER'];
+    ///numero + salage en sha1
+    $pass = $_SERVER['PHP_AUTH_PW'];
+    function getMesOffre($user);
 
+}
 if(filter_has_var(INPUT_GET,"latitude")){
     
     $latitude = filter_input(INPUT_GET, 'latitude');

@@ -57,4 +57,12 @@ public interface AccesService {
             .baseUrl("http://10.134.97.230/nowaste/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
+
+    @GET("service/type/get.php")
+    Call<List<Utilisateur>> getType();
+    Retrofit retrofitType = new Retrofit.Builder()
+            .baseUrl("http://10.134.97.230/nowaste/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
 }

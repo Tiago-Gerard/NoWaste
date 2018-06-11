@@ -18,6 +18,7 @@ static $requettteImage=NULL;
 static $requettePos = NULL;
 static $requestPosExiste = NULL;
 static $requestOffre = NULL;
+static $requestGetType=NULL;
 
 
 // Identifie si la si les headers envoyer avec la requette HTTP sont correcte
@@ -47,11 +48,11 @@ function getOffer($id){
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requestGetOffer==NULL){
         $db = getDB();
-        $request = $db->prepare("SELECT * FROM `Offre` WHERE idOffre=:idOffre");
+        $requestGetOffer = $db->prepare("SELECT * FROM `Offre` WHERE idOffre=:idOffre");
     }    
-    $request->bindParam(':idOffre',$id);
-    $request->execute();
-    $data = $request->fetchAll(PDO::FETCH_ASSOC);
+    $requestGetOffer->bindParam(':idOffre',$id);
+    $requestGetOffer->execute();
+    $data = $requestGetOffer->fetchAll(PDO::FETCH_ASSOC);
     return $data;
 }
 //
@@ -186,6 +187,17 @@ function updateOffre($idOffre,$lienPhoto,$description,$datePeremption,$idUtilisa
     $requestUpdateOffre->execute(); 
     
     
+}
+
+function getType(){
+    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
+    if($requestGetType==NULL){
+        $db = getDB();
+        $requestGetType = $db->prepare("SELECT * FROM `Type`");
+    }    
+    $requestGetType->execute();
+    $data = $requestGetTypest->fetchAll(PDO::FETCH_ASSOC);
+    return $data;
 }
 
 
