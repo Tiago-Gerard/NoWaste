@@ -4,10 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:id="@+id/pbLocalisation"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/editDesc"
         android:layout_width="178dp"
-        android:layout_height="123dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:ems="10"
@@ -20,42 +27,44 @@
         android:layout_width="212dp"
         android:layout_height="52dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="239dp" />
         //android:dropDownWidth="dat" />
 
     <EditText
         android:id="@+id/editDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/editText"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
         android:ems="10"
+        android:hint="Date de peremption"
         android:inputType="date"
         android:singleLine="true" />
 
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="398dp"
+        android:id="@+id/imgOffre"
+        android:layout_width="match_parent"
         android:layout_height="167dp"
-        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginEnd="3dp"
-        android:layout_marginTop="135dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_marginTop="64dp"
+        android:background="@android:color/darker_gray"
+        android:onClick="OnclickImage" />
 
     <EditText
-        android:id="@+id/editText4"
+        android:id="@+id/editCodePostal"
         android:layout_width="103dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/editText5"
+        android:layout_alignTop="@+id/editAdress"
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:hint="Code postal"
         android:inputType="textPersonName" />
 
     <EditText
-        android:id="@+id/editText5"
+        android:id="@+id/editAdress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -71,8 +80,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/button2"
-        android:layout_alignEnd="@+id/editText4"
+        android:layout_alignEnd="@+id/editCodePostal"
         android:clickable="true"
+        android:onClick="onClickButtonLoc"
         app:srcCompat="@android:drawable/btn_radio" />
 
     <TextView
@@ -80,7 +90,7 @@
         android:layout_width="309dp"
         android:layout_height="49dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/editText5"
+        android:layout_alignStart="@+id/editAdress"
         android:layout_marginBottom="142dp"
         android:text="Prendre ma position actuelle"
         android:textSize="24sp" />
@@ -90,8 +100,9 @@
         android:layout_width="382dp"
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/editText5"
+        android:layout_alignStart="@+id/editAdress"
         android:layout_marginBottom="20dp"
+        android:onClick="OnClickAdd"
         android:text="Ajouter" />
 
 </RelativeLayout>

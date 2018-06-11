@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements ServiceGetUser.Ca
         }
         public void Onclick(View v){
             ServiceCreateUser.createUser(this,editPrenom.getText().toString(),editNom.getText().toString(),editEmail.getText().toString(),editNumero.getText().toString());
+            ServiceGetUser.getUser(this,number,number);
         }
     @SuppressLint("MissingPermission")
     @Override
@@ -118,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements ServiceGetUser.Ca
     public void onResponse(List<Utilisateur> utilisateurs) {
         if(utilisateurs.size()!=0){
             Intent intent = new Intent(this,activity_home.class);
+            intent.putExtra("Utilisateur",utilisateurs.get(0));
             startActivity(intent);
         }
 

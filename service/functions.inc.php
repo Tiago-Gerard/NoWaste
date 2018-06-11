@@ -5,18 +5,18 @@
 	Page: 			index.php
 	Description:            Retourne l'Utilisateur en fonction des infomation envoyer en header
  	
-	Auteur:			Tiago Gerardd
+	Auteur:			Tiago Gerard
 */
 
 // Require du PDO
-//require "../pdo.php";
+require "../pdo.php";
 
 //Les requettes preparées sous forme d'un singleton
 static $requestLogin = NULL;
 static $requestGetOffer=NULL;
 static $requettteImage=NULL;
 static $requettePos = NULL;
-static $requestPosExiste = NULL;
+static $requettePosExiste = NULL;
 static $requestOffre = NULL;
 static $requestGetType=NULL;
 
@@ -69,21 +69,17 @@ function verifieChangementImage($lien,$idOffre)
     return ($data['lienPhoto']==$lien);
 }
 
-function mettreImageSurServeur( $ext) {
-    var_dump($_FILES['image']['name']);
-    if (isset($_FILES['image'])) {
+function mettreImageSurServeur( $ext,$img) {
+    if (isset($img)) {     
         $dossier = "../img/";
         $extensions = $ext;
         $taille_maxi = 100000000;
-        var_dump($_FILES);
-        $fichier = microtime() . basename($_FILES['image']['name']);
+        $fichier = microtime() . basename($img['name']);
         if (!isset($erreur)) { //S'il n'y a pas d'erreur, on upload
-            var_dump($_FILES['image']['name']);
             //On formate le nom du fichier ici...
             $fichier = strtr($fichier, 'ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ', 'AAAAAACEEEEIIIIOOOOOUUUUYaaaaaaceeeeiiiioooooouuuuyy');
             $fichier = preg_replace('/([^.a-z0-9]+)/i', '-', $fichier);
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $dossier.$fichier)) { //Si la fonction renvoie TRUE, c'est que ça a fonctionné...
-                var_dump($idFoodTruck);                
+            if (move_uploaded_file($img['tmp_name'], $dossier.$fichier)) { //Si la fonction renvoie TRUE, c'est que ça a fonctionné...              
                 json_encode("Réussi");
                 return $fichier;
             } else { //Sinon (la fonction renvoie FALSE).
@@ -111,26 +107,20 @@ function verifieSiLaPosexiste($latitude,$longitude)
     return $data;
 }
 
-function createOffre($lienPhoto,$description,$datePeremption,$idUtilisateur,$idType,$latitude,$longitude){
+function createOffre($lienPhoto,$description,$datePeremption,$idUtilisateur,$idType,$idPos){
     
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
-    
     if($requestOffre==NULL){
         $db = getDB();
-        $requestOffre = $db->prepare("INSERT INTO `Offre`(`lienPhoto`, `description`, `datePeremption`, `idUtilisateur`, `idType`, `idPosition`) "
-            . "VALUES (:lienPhoto,:description,:datePeremption,:idUtilisateur,:idType,:idPosition)");
+        $requestOffre = $db->prepare("INSERT INTO `Offre`(`lienPhoto`, `description`, `datePeremption`, `idUtilisateur`, `idType`, `idPosition`)VALUES (:lienPhoto,:description,:datePeremption,:idUtilisateur,:idType,:idPosition)");
     }
-    
-    $requestOffre->bindParam(':lienPhoto',$lienPhoto,PDO::PARAM_STR);
-    $requestOffre->bindParam(':description',$description,PDO::PARAM_STR);
-    $requestOffre->bindParam(':datePeremption',$datePeremption);
-    $requestOffre->bindParam(':idUtilisateur',$idUtilisateur,PDO::PARAM_INT);
-    $requestOffre->bindParam(':idType',$idType,PDO::PARAM_INT);
-    $requestOffre->bindParam(':idPosition',$lastId,PDO::PARAM_INT);  
-    
+    $requestOffre->bindParam(":lienPhoto",$lienPhoto);
+    $requestOffre->bindParam(":description",$description);
+    $requestOffre->bindParam(":datePeremption",$datePeremption);
+    $requestOffre->bindParam(":idUtilisateur",$idUtilisateur);
+    $requestOffre->bindParam(":idType",$idType);
+    $requestOffre->bindParam(":idPosition",$idPos);  
     $requestOffre->execute(); 
-    
-    
 }
 function createPos($latitude,$longitude){
     if($requestPos == NULL){
@@ -189,16 +179,7 @@ function updateOffre($idOffre,$lienPhoto,$description,$datePeremption,$idUtilisa
     
 }
 
-function getType(){
-    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
-    if($requestGetType==NULL){
-        $db = getDB();
-        $requestGetType = $db->prepare("SELECT * FROM `Type`");
-    }    
-    $requestGetType->execute();
-    $data = $requestGetTypest->fetchAll(PDO::FETCH_ASSOC);
-    return $data;
-}
+
 
 
 

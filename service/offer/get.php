@@ -37,7 +37,7 @@ if(filter_has_var(INPUT_SERVER,'PHP_AUTH_USER')){
     $user = $_SERVER['PHP_AUTH_USER'];
     ///numero + salage en sha1
     $pass = $_SERVER['PHP_AUTH_PW'];
-    function getMesOffre($user);
+    //afunction getMesOffre($user);
 
 }
 if(filter_has_var(INPUT_GET,"latitude")){

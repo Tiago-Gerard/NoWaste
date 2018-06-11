@@ -7,7 +7,7 @@
         android:title="Filtrer Offre" />
     <item
         android:id="@+id/create_offer"
-        android:title="Crée une offre" />
+        android:title="Créer une offre" />
     <item
         android:id="@+id/change_acc"
         android:title="Changer mon compte" />
