@@ -2,21 +2,17 @@ package com.example.gerardt_info.nowaste.controleurs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Path;
-import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,7 +22,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,7 +31,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.gerardt_info.nowaste.Data.ServiceCreateOffer;
 import com.example.gerardt_info.nowaste.Data.ServiceGetType;
@@ -45,7 +39,6 @@ import com.example.gerardt_info.nowaste.metier.GPS;
 import com.example.gerardt_info.nowaste.models.Type;
 import com.example.gerardt_info.nowaste.models.Utilisateur;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,9 +48,9 @@ import java.util.Locale;
 public class activity_home extends AppCompatActivity implements LocationListener,ServiceCreateOffer.Callbacks,ServiceGetType.Callbacks {
 
     private TextView mTextMessage;
-    private FragmentMain fragmentMain;
+    private FragmentOffer fragmentMain;
+    private FragmentMyOffer fragmentMainMyOffer;
     private static Context instance;
-    private Utilisateur utilisateu;
     private Menu menu;
     private static final int SELECT_PICTURE = 1;
     private LocationManager lm;
@@ -83,20 +76,23 @@ public class activity_home extends AppCompatActivity implements LocationListener
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    configureAndShowMainFragment();
-                    setTitle("Offer");
+                    getLocation();
+                    setTitle("Offre");
                     menu.findItem(R.id.change_acc).setVisible(false);
                     menu.findItem(R.id.filter).setVisible(true);
                     menu.findItem(R.id.create_offer).setVisible(false);
 
                     return true;
                 case R.id.navigation_dashboard:
+                    setTitle("Mes Offre");
+                    configureAndShowMainFragmentMyOffer();
                     menu.findItem(R.id.change_acc).setVisible(false);
                     menu.findItem(R.id.filter).setVisible(false);
                     menu.findItem(R.id.create_offer).setVisible(true);
 
                     return true;
                 case R.id.navigation_notifications:
+                    setTitle("Mon compte");
                     menu.findItem(R.id.change_acc).setVisible(true);
                     menu.findItem(R.id.filter).setVisible(false);
                     menu.findItem(R.id.create_offer).setVisible(false);
@@ -125,11 +121,22 @@ public class activity_home extends AppCompatActivity implements LocationListener
         return true;
     }
     private void configureAndShowMainFragment() {
-        fragmentMain = (FragmentMain) getSupportFragmentManager().findFragmentById(R.id.recycler_container);
-
+        fragmentMain = (FragmentOffer) getSupportFragmentManager().findFragmentById(R.id.recycler_container);
+        getLocation();
+        fragmentMain.setLatitude(latitude);
+        fragmentMain.setLongitude(longitude);
         if (fragmentMain == null){
-            fragmentMain = new FragmentMain();
+            fragmentMain = new FragmentOffer();
             getSupportFragmentManager().beginTransaction().add(R.id.recycler_container, fragmentMain).commit();
+
+        }
+    }
+    private void configureAndShowMainFragmentMyOffer() {
+        fragmentMainMyOffer = (FragmentMyOffer) getSupportFragmentManager().findFragmentById(R.id.myOffer_recycler_view);
+        fragmentMainMyOffer.setIdUtilisateur(utilisateur.getIdUtilisateur());
+        if (fragmentMainMyOffer == null){
+            fragmentMainMyOffer = new FragmentMyOffer();
+            getSupportFragmentManager().beginTransaction().add(R.id.recycler_container, fragmentMainMyOffer).commit();
 
         }
     }
@@ -169,7 +176,30 @@ public class activity_home extends AppCompatActivity implements LocationListener
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, 0);
     }
+    @SuppressLint("MissingPermission")
+    public void getLocation() {
+        pb.setVisibility(View.VISIBLE);
+        final Handler h = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                if(longitude!=0.0&&latitude!=0.0){
+                    h.removeCallbacks(this);
+                    pb.setVisibility(View.INVISIBLE);
 
+                        //stopGPS();
+                    configureAndShowMainFragment();
+                }
+                else{
+                    latitude = GPS.gps(getApplicationContext()).getLatitude();
+                    longitude = GPS.gps(getApplicationContext()).getLongitude();
+                    h.postDelayed(this,100);
+                }
+
+            }
+        };
+        runnable.run();
+    }
     @SuppressLint("MissingPermission")
     public void onClickButtonLoc(View v) {
         pb.setVisibility(View.VISIBLE);
@@ -319,5 +349,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
         }
         return null;
+    }
+    private void setSetting(){
+
     }
 }

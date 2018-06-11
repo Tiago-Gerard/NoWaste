@@ -1,6 +1,5 @@
 package com.example.gerardt_info.nowaste.controleurs;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gerardt_info.nowaste.Data.ServiceOffre;
@@ -26,14 +24,20 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FragmentMain extends Fragment implements ServiceOffre.Callbacks{
+public class FragmentMyOffer extends Fragment implements ServiceOffre.Callbacks{
     @BindView(R.id.main_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.swipe) SwipeRefreshLayout swipeRefreshLayout;
 
     private List<Offre> offres;
     private OffreAdapter adapter;
 
-    public FragmentMain() {
+    public void setIdUtilisateur(String idUtilisateur) {
+        this.idUtilisateur = idUtilisateur;
+    }
+
+    private String idUtilisateur;
+
+    public FragmentMyOffer() {
 
     }
 

@@ -10,16 +10,15 @@ import android.view.ViewGroup;
 import com.bumptech.glide.RequestManager;
 import com.example.gerardt_info.nowaste.R;
 import com.example.gerardt_info.nowaste.models.Offre;
-import com.example.gerardt_info.nowaste.views.OfferViewHolder;
 
 import java.util.List;
 
-public class OffreAdapter  extends RecyclerView.Adapter<OfferViewHolder>{
+public class MyOffreAdapter extends RecyclerView.Adapter<OfferViewHolder>{
 
     private List<Offre> offres;
     private RequestManager glide;
 
-    public OffreAdapter( List<Offre> offres, RequestManager glide) {
+    public MyOffreAdapter(List<Offre> offres, RequestManager glide) {
         this.offres = offres;
         this.glide = glide;
     }
@@ -29,7 +28,7 @@ public class OffreAdapter  extends RecyclerView.Adapter<OfferViewHolder>{
     public OfferViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.item, parent, false);
+        View view = inflater.inflate(R.layout.itemmesoffres, parent, false);
         return new OfferViewHolder(view);
     }
 
@@ -45,7 +44,7 @@ public class OffreAdapter  extends RecyclerView.Adapter<OfferViewHolder>{
         return this.offres.size();
     }
 
-    public Offre getOffre(int position){
+    public Offre getFoodTruck(int position){
         return this.offres.get(position);
     }
 

@@ -18,14 +18,14 @@ public class ServiceOffre {
         void onFailure();
     }
 
-    public static void getOffres(ServiceOffre.Callbacks callback){
+    public static void getOffres(ServiceOffre.Callbacks callback,double latitude,double longitude){
         final WeakReference<ServiceOffre.Callbacks> callbacksWeakReference = new WeakReference<ServiceOffre.Callbacks>(callback);
 
 
 
         AccesService accesService = AccesService.retrofitGetOffre.create(AccesService.class);
 
-        retrofit2.Call<List<Offre>> call = accesService.getOffre(46.15,6.15);
+        retrofit2.Call<List<Offre>> call = accesService.getOffre(latitude,longitude);
 
         call.enqueue(new Callback<List<Offre>>() {
             @Override

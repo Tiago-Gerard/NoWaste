@@ -74,7 +74,7 @@ public interface AccesService {
     @POST("service/offer/create.php")
     Call<Boolean> createOffer(
             @Part MultipartBody.Part image,
-            systemctl@Part("name") RequestBody name,
+            @Part("name") RequestBody name,
             @Query("description") String description,
             @Query("datePeremption") String datePeremption,
             @Query("latitude") String latitude,
@@ -85,4 +85,16 @@ public interface AccesService {
             .baseUrl("http://10.134.97.230/nowaste/")
             .addConverterFactory(GsonConverterFactory.create())
             .build();
+
+    @GET("service/offer/get.php")
+    Call<List<Offre>> getMesOffres(
+            @Query("idUtilisateur") String idUtilisateur);
+
+    Retrofit retrofitGetMyOffre = new Retrofit.Builder()
+            .baseUrl("http://10.134.97.230/nowaste/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
+
+
 }
