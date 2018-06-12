@@ -2,6 +2,7 @@ package com.example.gerardt_info.nowaste.Data;
 
 
 
+import com.example.gerardt_info.nowaste.models.MyOffer;
 import com.example.gerardt_info.nowaste.models.Offre;
 import com.example.gerardt_info.nowaste.models.Type;
 import com.example.gerardt_info.nowaste.models.Utilisateur;
@@ -30,6 +31,7 @@ import com.example.gerardt_info.nowaste.Data.Outils;
 
 public interface AccesService {
 
+    final String baseUrl ="http://10.134.97.230/nowaste/";
 
     @GET("service/offer/get.php")
     Call<List<Offre>> getOffre(
@@ -37,7 +39,7 @@ public interface AccesService {
             @Query("longitude") double lon);
 
     Retrofit retrofitGetOffre = new Retrofit.Builder()
-            .baseUrl("http://10.134.97.230/nowaste/")
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
@@ -46,7 +48,7 @@ public interface AccesService {
     Call<List<Utilisateur>> getUser();
 
     Retrofit retrofitUser = new Retrofit.Builder()
-            .baseUrl("http://10.134.97.230/nowaste/")
+            .baseUrl(baseUrl)
             .client(Outils.getOkHttpClient())
             .addConverterFactory(GsonConverterFactory.create())
             .build();
@@ -59,14 +61,14 @@ public interface AccesService {
             @Field("numero") String numero,
             @Field("prenom") String prenom);
     Retrofit retrofitCreateUser = new Retrofit.Builder()
-            .baseUrl("http://10.134.97.230/nowaste/")
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
     @GET("service/type/get.php")
     Call<List<Type>> getType();
     Retrofit retrofitType = new Retrofit.Builder()
-            .baseUrl("http://10.134.97.230/nowaste/")
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
@@ -82,18 +84,42 @@ public interface AccesService {
             @Query("idUtilisateur") String idUtilisateur,
             @Query("idType") String idType);
     Retrofit retrofitCreateOffer = new Retrofit.Builder()
-            .baseUrl("http://10.134.97.230/nowaste/")
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
     @GET("service/offer/get.php")
-    Call<List<Offre>> getMesOffres(
+    Call<List<MyOffer>> getMesOffres(
             @Query("idUtilisateur") String idUtilisateur);
 
     Retrofit retrofitGetMyOffre = new Retrofit.Builder()
-            .baseUrl("http://10.134.97.230/nowaste/")
+            .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
+
+    @POST("service/user/update.php")
+    @FormUrlEncoded
+    Call<Boolean> updateUser(
+            @Field("idUtilisateur") String idUtilisateur,
+            @Field("email") String email,
+            @Field("nom") String nom,
+            @Field("numero") String numero,
+            @Field("prenom") String prenom);
+    Retrofit retrofitUpdateUser = new Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
+    @POST("service/offer/delete.php")
+    @FormUrlEncoded
+    Call<Boolean> deleteMyOffre(
+            @Field("idOffre") String idOffre);
+
+    Retrofit retrofitDeleteMyOffer = new Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
 
 
 

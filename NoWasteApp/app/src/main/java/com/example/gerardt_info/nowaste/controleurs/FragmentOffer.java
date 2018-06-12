@@ -71,7 +71,9 @@ public class FragmentOffer extends Fragment implements ServiceOffre.Callbacks{
             }
         });
     }
-
+    public void delete(){
+        getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
+    }
     private void configureRecyclerView() {
         this.offres = new ArrayList<>();
         this.adapter = new OffreAdapter( this.offres, Glide.with(this));

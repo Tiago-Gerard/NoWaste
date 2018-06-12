@@ -11,9 +11,4 @@
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="MyOffer" />
 
-    <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@android:drawable/ic_menu_preferences"
-        android:title="Settings" />
-
 </menu>

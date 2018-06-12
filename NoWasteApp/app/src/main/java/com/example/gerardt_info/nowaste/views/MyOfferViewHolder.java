@@ -2,22 +2,25 @@ package com.example.gerardt_info.nowaste.views;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.example.gerardt_info.nowaste.R;
+import com.example.gerardt_info.nowaste.models.MyOffer;
 import com.example.gerardt_info.nowaste.models.Offre;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-public class MyOfferViewHolder extends RecyclerView.ViewHolder{
+public class MyOfferViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
 
-    @BindView(R.id.txvDistance)
-    TextView txvDistance;
+
     @BindView(R.id.txvName)
     TextView txvName;
     @BindView(R.id.txvDesc)
@@ -29,6 +32,9 @@ public class MyOfferViewHolder extends RecyclerView.ViewHolder{
     @BindView(R.id.imgOffre)
     ImageView imgOffre;
 
+    @BindView(R.id.imgBtnDelete)
+    ImageButton imageButton;
+    private WeakReference<MyOffreAdapter.Listener> callbackWeakRef;
 
     public MyOfferViewHolder(View itemView) {
         super(itemView);
@@ -36,14 +42,23 @@ public class MyOfferViewHolder extends RecyclerView.ViewHolder{
 
     }
 
-    public void updateWithOffer(Offre offre, RequestManager glide){
+    public void updateWithOffer(MyOffer offre, RequestManager glide,MyOffreAdapter.Listener callback){
         this.txvName.setText(offre.getPrenom());
         this.txvNum.setText(offre.getContact());
         this.txvDate.setText(offre.getDate());
         this.txvDesc.setText(offre.getDescription());
-        Double d = Double.parseDouble(offre.getDistance());
-        Integer i = d.intValue();
-        this.txvDistance.setText(i.toString()+" m");
+        imageButton.setOnClickListener(this);
         glide.load("http://10.134.97.230/nowaste/service/img/"+offre.getLien()).into(imgOffre);
+        callbackWeakRef = new WeakReference<MyOffreAdapter.Listener>(callback);
+    }
+
+
+
+    @Override
+    public void onClick(View v) {
+        MyOffreAdapter.Listener callback = callbackWeakRef.get();
+        if (callback != null) {
+            callback.onClickDeleteButton(getAdapterPosition());
+        }
     }
 }

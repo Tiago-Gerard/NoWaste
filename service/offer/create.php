@@ -17,9 +17,10 @@ if(filter_has_var(INPUT_GET,"description")){
     $idPos = verifieSiLaPosexiste($latitude, $longitude);
     if($idPos==NULL){
         $idPos= createPos($latitude, $longitude);
+        
     }
     else{
-        $idPos = $idPos[0]['idPosition'];
+        $idPos = $idPos[0]['idPosition'];   
     }
     $lienPhoto = mettreImageSurServeur(array('.png','.jpg','.jpeg'),$_FILES['image']);
     $description = filter_input(INPUT_GET, 'description');
@@ -27,7 +28,7 @@ if(filter_has_var(INPUT_GET,"description")){
     $idUtilisateur = filter_input(INPUT_GET, 'idUtilisateur');
     $idType = filter_input(INPUT_GET, 'idType');
     //var_dump(createOffre($lienPhoto,$description,$datePeremption,$idUtilisateur,$idType,$idPos));
-    createOffre($lienPhoto,$description,$datePeremption,$idUtilisateur,$idType,$idPos);     
+    echo createOffre($lienPhoto,$description,$datePeremption,$idUtilisateur,$idType,$idPos);     
     
 }
 

@@ -3,7 +3,7 @@
 require '../pdo.php';
 $idOffre = filter_input(INPUT_POST,'idOffre');
 static $requestDelete=NULL;
-deleteOffre($idOffre);
+echo deleteOffre($idOffre);
 
 function deleteOffre($idOffre){
     if($requestDelete == NULL){
@@ -13,4 +13,5 @@ function deleteOffre($idOffre){
     
     $requestDelete->bindParam(':idOffre',$idOffre);
     $requestDelete->execute();
+    return json_encode(true);
 }

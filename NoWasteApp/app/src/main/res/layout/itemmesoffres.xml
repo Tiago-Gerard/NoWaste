@@ -13,20 +13,11 @@
         android:layout_height="350dp">
 
         <TextView
-            android:id="@+id/txvDistance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/imgOffre"
-            android:layout_alignParentTop="true"
-            android:text="300m"
-            android:textSize="18sp" />
-
-        <TextView
             android:id="@+id/txvNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/txvDistance"
+            android:layout_below="@+id/txvName"
             android:text="0791931253"
             android:textSize="18sp" />
 
@@ -67,21 +58,13 @@
             android:text="I've got some tomatoes still available 2 days feel free to come take them i give it free" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/imgBtnDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
-            android:layout_toEndOf="@+id/txvNum"
-            app:srcCompat="@android:drawable/ic_menu_delete" />
-
-        <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_alignTop="@+id/imageButton"
-            app:srcCompat="@android:drawable/ic_menu_edit" />
+            android:layout_marginBottom="12dp"
+            app:srcCompat="@android:drawable/ic_menu_delete" />
 
     </RelativeLayout>
 

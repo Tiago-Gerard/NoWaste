@@ -43,18 +43,7 @@ function login($numero,$pwd){
     return json_encode($array);
 }
 
-//Retourne une offre par son identifiant
-function getOffer($id){
-    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
-    if($requestGetOffer==NULL){
-        $db = getDB();
-        $requestGetOffer = $db->prepare("SELECT * FROM `Offre` WHERE idOffre=:idOffre");
-    }    
-    $requestGetOffer->bindParam(':idOffre',$id);
-    $requestGetOffer->execute();
-    $data = $requestGetOffer->fetchAll(PDO::FETCH_ASSOC);
-    return $data;
-}
+
 //
 function verifieChangementImage($lien,$idOffre)
 {
@@ -120,15 +109,16 @@ function createOffre($lienPhoto,$description,$datePeremption,$idUtilisateur,$idT
     $requestOffre->bindParam(":idUtilisateur",$idUtilisateur);
     $requestOffre->bindParam(":idType",$idType);
     $requestOffre->bindParam(":idPosition",$idPos);  
-    $requestOffre->execute(); 
+    $requestOffre->execute();
+    return json_encode(true);
 }
 function createPos($latitude,$longitude){
     if($requestPos == NULL){
         $db= getDB();
         $requestPos = $db->prepare("INSERT INTO `Position`(`latitude`, `longitude`) VALUES (:latitude,:longitude)");
     }
-    $requestPos->bindParam(':latitude',$latitude,PDO::PARAM_STR);
-    $requestPos->bindParam(':longitude',$longitude,PDO::PARAM_STR);
+    $requestPos->bindParam(':latitude',$latitude);
+    $requestPos->bindParam(':longitude',$longitude);
     $requestPos->execute();  
     $lastId = $db->lastInsertId();
     return $lastId;
