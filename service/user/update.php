@@ -1,10 +1,9 @@
 <?php
 
-require'../pdo.php';
+include '../functions.inc.php';
 
-//include '../functions.inc.php';
 
-static $requestUpdate=NULL;
+
 if(filter_has_var(INPUT_POST,"idUtilisateur")){
     ///numero de téléphone
     //$numero = $_SERVER['PHP_AUTH_USER'];
@@ -21,16 +20,4 @@ if(filter_has_var(INPUT_POST,"idUtilisateur")){
     
 }
 
-function update($idUtilisateur,$nom,$prenom,$numero,$email){
-    if($requestUpdate==NULL){
-        $db = getDB();
-        $requestUpdate = $db->prepare("UPDATE `Utilisateur` SET `nom`=:nom,`prenom`=:prenom,`email`=:email WHERE `idUtilisateur` = :idUtilisateur");   
-    }
-    $requestUpdate->bindParam(':email',$email,PDO::PARAM_STR);
-    $requestUpdate->bindParam(':nom',$nom,PDO::PARAM_STR);
-    $requestUpdate->bindParam(':prenom',$prenom,PDO::PARAM_STR);
-    $requestUpdate->bindParam(':idUtilisateur',$idUtilisateur,PDO::PARAM_INT);
-    $requestUpdate->execute();    
-    return json_encode(true);
-    
-}
+

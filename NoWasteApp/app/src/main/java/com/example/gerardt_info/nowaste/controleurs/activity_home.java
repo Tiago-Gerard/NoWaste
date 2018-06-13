@@ -2,6 +2,7 @@ package com.example.gerardt_info.nowaste.controleurs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,9 +22,6 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -32,33 +30,35 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.gerardt_info.nowaste.Data.ServiceCreateOffer;
-import com.example.gerardt_info.nowaste.Data.ServiceGetOffreByType;
 import com.example.gerardt_info.nowaste.Data.ServiceGetType;
 import com.example.gerardt_info.nowaste.Data.ServiceUpdate;
 import com.example.gerardt_info.nowaste.Data.ServiceUpdateOffer;
 import com.example.gerardt_info.nowaste.R;
 import com.example.gerardt_info.nowaste.Data.utils.GPS;
 import com.example.gerardt_info.nowaste.models.MyOffer;
-import com.example.gerardt_info.nowaste.models.Offre;
 import com.example.gerardt_info.nowaste.models.Type;
 import com.example.gerardt_info.nowaste.models.Utilisateur;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-public class activity_home extends AppCompatActivity implements LocationListener,ServiceCreateOffer.Callbacks,ServiceGetType.Callbacks,ServiceUpdate.Callbacks {
+public class activity_home extends AppCompatActivity implements LocationListener,ServiceCreateOffer.Callbacks,ServiceGetType.Callbacks,ServiceUpdate.Callbacks,DatePickerDialog.OnCancelListener, DatePickerDialog.OnDateSetListener {
 
     private TextView mTextMessage;
     private FragmentOffer fragmentMain;
@@ -90,6 +90,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
     boolean filter = true;
     MyOffer myOffer;
     private String idType;
+    private DatePicker datePicker;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -127,7 +128,9 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        offerNav();
+        //TODO offer nav
+        //offerNav();
+
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,7 +168,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
         img = findViewById(R.id.imgOffre);
 
         this.editDesc = findViewById(R.id.editDesc);
-        this.editDatePeremption = findViewById(R.id.editDate);
+        //this.editDatePeremption = findViewById(R.id.editDate);
         this.editDesc.setText(myOffer.getDescription());
         this.editDatePeremption.setText(myOffer.getDate());
         this.editAdress = findViewById(R.id.editAdress);
@@ -222,14 +225,16 @@ public class activity_home extends AppCompatActivity implements LocationListener
         switch (item.getItemId()) {
             case R.id.create_offer:
                 filter=false;
+
                 setContentView(R.layout.create_offre);
+                setCreateOffer();
                 getSupportActionBar().hide();
                 pb=findViewById(R.id.pbLocalisation);
                 pb.setVisibility(View.INVISIBLE);
                 editAdress = findViewById(R.id.editAdress);
                 editPostal = findViewById(R.id.editCodePostal);
                 sp = findViewById(R.id.spinner2);
-                editDatePeremption=findViewById(R.id.editDate);
+                //editDatePeremption=findViewById(R.id.editDate);
                 editDesc = findViewById(R.id.editDesc);
                 ServiceGetType.getType(this);
                 return true;
@@ -259,9 +264,11 @@ public class activity_home extends AppCompatActivity implements LocationListener
     }
 
     public void OnclickImage(View v){
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        Intent photoPickerIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, 0);
+
+
     }
     @SuppressLint("MissingPermission")
     public void getLocation() {
@@ -338,15 +345,12 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
     public void OnClickAdd(View v){
         Address a = convertAddress(editAdress.getText().toString()+","+editPostal.getText().toString());
-        //todo recuperer les donner de la view
         if(create){
-            addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),editDatePeremption.getText().toString(),editDesc.getText().toString(),getIdTyoeFromText(),utilisateur.getIdUtilisateur());
+            addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),getStrDateFromDatePicker(datePicker),editDesc.getText().toString(),getIdTyoeFromText(),utilisateur.getIdUtilisateur());
         }
         else{
-            ServiceUpdateOffer.updateOffer(this,myOffer.getId(),editDesc.getText().toString(),editDatePeremption.getText().toString(),myOffer.getIdType(),a.getLongitude(),a.getLatitude());
+            ServiceUpdateOffer.updateOffer(this,myOffer.getId(),editDesc.getText().toString(),getStrDateFromDatePicker(datePicker),myOffer.getIdType(),a.getLongitude(),a.getLatitude());
         }
-
-
     }
 
 
@@ -531,5 +535,42 @@ public class activity_home extends AppCompatActivity implements LocationListener
         });
 
         b.show();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialogInterface) {
+
+    }
+    private void setCreateOffer(){
+        Calendar myDate = Calendar.getInstance();
+        int day = myDate.get (Calendar.DAY_OF_MONTH);
+        int year = myDate.get(Calendar.YEAR);
+        int month = myDate.get(Calendar.MONTH);
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(this, activity_home.this, year, month,day );
+        ((Button) findViewById(R.id.datePicker)).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        datePickerDialog.show();
+                    }
+                });
+    }
+
+    @Override
+    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+        this.datePicker = datePicker;
+        //getStrDateFromDatePicker(datePicker);
+    }
+
+    public static String getStrDateFromDatePicker(DatePicker datePicker){
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year =  datePicker.getYear();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+        Date date = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat( "yyyy MM dd");
+        String dateStr = format.format(date);
+        return dateStr;
     }
 }

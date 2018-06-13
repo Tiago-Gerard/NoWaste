@@ -19,6 +19,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:ems="10"
+
         android:hint="Description"
         android:inputType="textPersonName"
         android:singleLine="false" />
@@ -29,19 +30,10 @@
         android:layout_height="52dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="239dp" />
+        android:layout_marginTop="239dp" /><![CDATA[
         //android:dropDownWidth="dat" />
 
-    <EditText
-        android:id="@+id/editDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:ems="10"
-        android:hint="Date de peremption"
-        android:inputType="date"
-        android:singleLine="true" />
+    ]]>
 
     <ImageView
         android:id="@+id/imgOffre"
@@ -51,7 +43,8 @@
         android:layout_alignParentTop="true"
         android:layout_marginTop="64dp"
         android:background="@android:color/darker_gray"
-        android:onClick="OnclickImage" />
+        android:onClick="OnclickImage"
+        android:src="@android:drawable/ic_menu_camera" />
 
     <EditText
         android:id="@+id/editCodePostal"
@@ -105,5 +98,13 @@
         android:layout_marginBottom="20dp"
         android:onClick="OnClickAdd"
         android:text="Ajouter" />
+
+    <Button
+        android:id="@+id/datePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/editAdress"
+        android:text="Button" />
 
 </RelativeLayout>
