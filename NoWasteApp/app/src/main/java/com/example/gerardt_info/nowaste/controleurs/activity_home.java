@@ -3,6 +3,7 @@ package com.example.gerardt_info.nowaste.controleurs;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -24,6 +25,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -39,11 +41,14 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.gerardt_info.nowaste.Data.ServiceCreateOffer;
+import com.example.gerardt_info.nowaste.Data.ServiceGetOffreByType;
 import com.example.gerardt_info.nowaste.Data.ServiceGetType;
 import com.example.gerardt_info.nowaste.Data.ServiceUpdate;
+import com.example.gerardt_info.nowaste.Data.ServiceUpdateOffer;
 import com.example.gerardt_info.nowaste.R;
-import com.example.gerardt_info.nowaste.metier.GPS;
+import com.example.gerardt_info.nowaste.Data.utils.GPS;
 import com.example.gerardt_info.nowaste.models.MyOffer;
+import com.example.gerardt_info.nowaste.models.Offre;
 import com.example.gerardt_info.nowaste.models.Type;
 import com.example.gerardt_info.nowaste.models.Utilisateur;
 
@@ -81,6 +86,10 @@ public class activity_home extends AppCompatActivity implements LocationListener
     static private Double latitude=0.0;
     static private Double longitude=0.0;
     private ImageView img;
+    boolean create = true;
+    boolean filter = true;
+    MyOffer myOffer;
+    private String idType;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -91,9 +100,11 @@ public class activity_home extends AppCompatActivity implements LocationListener
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     offerNav();
+                    menu.findItem(R.id.filter).setVisible(true);
                     return true;
                 case R.id.navigation_dashboard:
                     myOfferNav();
+                    menu.findItem(R.id.filter).setVisible(false);
                     return true;
             }
             return false;
@@ -101,6 +112,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
     };
     private void myOfferNav(){
         setTitle("Mes Offre");
+
         deleteMainFragment();
         configureAndShowMainFragmentMyOffer();
     }
@@ -113,7 +125,6 @@ public class activity_home extends AppCompatActivity implements LocationListener
         pgrsLoading = findViewById(R.id.pgrBar);
         utilisateur = (Utilisateur) getIntent().getSerializableExtra("Utilisateur");
 
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         offerNav();
@@ -134,14 +145,25 @@ public class activity_home extends AppCompatActivity implements LocationListener
             fragmentMain = new FragmentOffer();
             fragmentMain.setLatitude(latitude);
             fragmentMain.setLongitude(longitude);
+            fragmentMain.setIdUtilisateur(utilisateur.getIdUtilisateur());
+            fragmentMain.setIdType(idType);
             getSupportFragmentManager().beginTransaction().add(R.id.recycler_container, fragmentMain).commit();
             pgrsLoading.setVisibility(View.INVISIBLE);
 
         }
+        else{
+            fragmentMain.setLatitude(latitude);
+            fragmentMain.setLongitude(longitude);
+            fragmentMain.setIdUtilisateur(utilisateur.getIdUtilisateur());
+            fragmentMain.setIdType(idType);
+        }
     }
     public void updateOffer(MyOffer myOffer){
+        create=false;
+        this.myOffer = myOffer;
         setContentView(R.layout.create_offre);
         img = findViewById(R.id.imgOffre);
+
         this.editDesc = findViewById(R.id.editDesc);
         this.editDatePeremption = findViewById(R.id.editDate);
         this.editDesc.setText(myOffer.getDescription());
@@ -199,6 +221,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.create_offer:
+                filter=false;
                 setContentView(R.layout.create_offre);
                 getSupportActionBar().hide();
                 pb=findViewById(R.id.pbLocalisation);
@@ -214,8 +237,9 @@ public class activity_home extends AppCompatActivity implements LocationListener
                 setSetting();
                 return true;
             case R.id.filter:
-                setContentView(R.layout.activity_filtre);
-                getSupportActionBar().hide();
+                filter=true;
+                ServiceGetType.getType(this);
+
 
                 return true;
             default:
@@ -241,16 +265,17 @@ public class activity_home extends AppCompatActivity implements LocationListener
     }
     @SuppressLint("MissingPermission")
     public void getLocation() {
-        //pb.setVisibility(View.VISIBLE);
+        pb=findViewById(R.id.pgrBar);
+        pb.setVisibility(View.VISIBLE);
         final Handler h = new Handler();
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 if(longitude!=0.0&&latitude!=0.0){
                     h.removeCallbacks(this);
-                    //pb.setVisibility(View.INVISIBLE);
+                    pb.setVisibility(View.INVISIBLE);
 
-                        //stopGPS();
+                    //stopGPS();
                     configureAndShowMainFragment();
                 }
                 else{
@@ -265,6 +290,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
     }
     @SuppressLint("MissingPermission")
     public void onClickButtonLoc(View v) {
+        pb = findViewById(R.id.pbLocalisation);
         pb.setVisibility(View.VISIBLE);
         final Handler h = new Handler();
         a = new ArrayList<>();
@@ -303,9 +329,23 @@ public class activity_home extends AppCompatActivity implements LocationListener
         lm.removeUpdates(this);
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this,activity_home.class);
+        intent.putExtra("Utilisateur",utilisateur);
+        startActivity(intent);
+    }
+
     public void OnClickAdd(View v){
+        Address a = convertAddress(editAdress.getText().toString()+","+editPostal.getText().toString());
         //todo recuperer les donner de la view
-        addOfferOnServeur(path,latitude.toString(),longitude.toString(),editDatePeremption.getText().toString(),editDesc.getText().toString(),getIdTyoeFromText(),utilisateur.getIdUtilisateur());
+        if(create){
+            addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),editDatePeremption.getText().toString(),editDesc.getText().toString(),getIdTyoeFromText(),utilisateur.getIdUtilisateur());
+        }
+        else{
+            ServiceUpdateOffer.updateOffer(this,myOffer.getId(),editDesc.getText().toString(),editDatePeremption.getText().toString(),myOffer.getIdType(),a.getLongitude(),a.getLatitude());
+        }
+
 
     }
 
@@ -349,12 +389,39 @@ public class activity_home extends AppCompatActivity implements LocationListener
                 //UploadService.uploadImage(this, getRealPathFromURI(data.getData()));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-               // Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                // Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
             }
 
         }else {
             //Toast.makeText(LoginActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
+    }
+    private Address convertAddress(String adress){
+        Geocoder coder = new Geocoder(this);
+        List<Address> address;
+        Address location=null;
+        //LatLng resLatLng = null;
+
+        try {
+            // May throw an IOException
+            address = coder.getFromLocationName(adress, 1);
+            if (address == null) {
+                return null;
+            }
+
+            if (address.size() == 0) {
+                return null;
+            }
+
+            location = address.get(0);
+
+            //resLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        return location;
     }
     public String getRealPathFromURI(Uri contentUri) {
 
@@ -370,14 +437,14 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
         return cursor.getString(column_index);
     }
-    private void addOfferOnServeur(String path,String latitude,String longitude, String datePeremption,String description,String idType,String idUtilisateur){
+    private void addOfferOnServeur(String path,double latitude,double longitude, String datePeremption,String description,String idType,String idUtilisateur){
         ServiceCreateOffer.createUser(this,description,datePeremption,idType,longitude,latitude,path,idUtilisateur);
     }
 
     @Override
     public void onResponse(Boolean bool) {
-           /* setContentView(R.layout.activity_home);
-            getSupportActionBar().show();*/
+            setContentView(R.layout.activity_home);
+            getSupportActionBar().show();
         Intent intent = new Intent(this,activity_home.class);
         intent.putExtra("Utilisateur",utilisateur);
         startActivity(intent);
@@ -386,8 +453,15 @@ public class activity_home extends AppCompatActivity implements LocationListener
     @Override
     public void onResponse(List<Type> types) {
         this.types = types;
-        setSpinner();
+        if(filter==false){
+            setSpinner();
+        }
+        else{
+            alertSpinner();
+        }
+
     }
+
 
     @Override
     public void onFailure() {
@@ -433,5 +507,29 @@ public class activity_home extends AppCompatActivity implements LocationListener
     public void OnClickModifie(View v){
         ServiceUpdate.updateUser(this,editPrenom.getText().toString(),editNom.getText().toString(),editEmail.getText().toString(),editNumero.getText().toString(),utilisateur.getIdUtilisateur());
 
+    }
+    public void alertSpinner() {
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+
+        b.setTitle("Filtres");
+        String[] filtre =new String[types.size()];
+        for (int i =0;i<types.size();i++)
+        {
+            filtre[i]=types.get(i).getNom();
+        }
+        b.setItems(filtre, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                idType = types.get(which).getIdType();
+                offerNav();
+                fragmentMain.executeHttpRequestWithRetrofit();
+
+            }
+
+        });
+
+        b.show();
     }
 }

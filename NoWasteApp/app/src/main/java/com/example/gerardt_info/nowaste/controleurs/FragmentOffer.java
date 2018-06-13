@@ -15,6 +15,7 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.gerardt_info.nowaste.Data.ServiceGetOffreByType;
 import com.example.gerardt_info.nowaste.Data.ServiceOffre;
 import com.example.gerardt_info.nowaste.R;
 import com.example.gerardt_info.nowaste.models.Offre;
@@ -26,7 +27,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class FragmentOffer extends Fragment implements ServiceOffre.Callbacks{
+public class FragmentOffer extends Fragment implements ServiceOffre.Callbacks,ServiceGetOffreByType.Callbacks{
     @BindView(R.id.main_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.swipe) SwipeRefreshLayout swipeRefreshLayout;
 
@@ -45,6 +46,17 @@ public class FragmentOffer extends Fragment implements ServiceOffre.Callbacks{
 
     private Double longitude;
 
+    public void setIdUtilisateur(String idUtilisateur) {
+        this.idUtilisateur = idUtilisateur;
+    }
+
+    private String idUtilisateur;
+
+    public void setIdType(String idType) {
+        this.idType = idType;
+    }
+
+    private String idType;
     public FragmentOffer() {
 
     }
@@ -59,8 +71,14 @@ public class FragmentOffer extends Fragment implements ServiceOffre.Callbacks{
         return view;
     }
 
-    private void executeHttpRequestWithRetrofit() {
-        ServiceOffre.getOffres(this,latitude,longitude);
+    public void executeHttpRequestWithRetrofit() {
+        if(idType!=null){
+            ServiceGetOffreByType.getOffresByType(this,latitude,longitude,idUtilisateur,idType);
+        }
+        else {
+            ServiceOffre.getOffres(this,latitude,longitude,idUtilisateur);
+        }
+
     }
 
     private void configureSwipeRefreshLayout() {

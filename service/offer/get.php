@@ -52,16 +52,25 @@ if(filter_has_var(INPUT_SERVER,'PHP_AUTH_USER')){
     //afunction getMesOffre($user);
 
 }
-if(filter_has_var(INPUT_GET,"idUtilisateur")){
+if(filter_has_var(INPUT_GET,"idUtilisateur")&&(filter_has_var(INPUT_GET,"latitude")==false)){
     $idUtilisateur = filter_input(INPUT_GET,'idUtilisateur');
     echo geMytOffer($idUtilisateur);
 }
-if(filter_has_var(INPUT_GET,"latitude")){
-    
+if(filter_has_var(INPUT_GET,"latitude")&&(filter_has_var(INPUT_GET,"idType")==false)){
     $latitude = filter_input(INPUT_GET, 'latitude');
     $longitude = filter_input(INPUT_GET, 'longitude');
+    $idUtilisateur = filter_input(INPUT_GET,'idUtilisateur');
     
-    echo getOffreProche($latitude,$longitude);
+    echo getOffreProche($latitude,$longitude,$idUtilisateur);
+    
+}
+if(filter_has_var(INPUT_GET,"idType")){
+    $latitude = filter_input(INPUT_GET, 'latitude');
+    $longitude = filter_input(INPUT_GET, 'longitude');
+    $idUtilisateur = filter_input(INPUT_GET,'idUtilisateur');
+    $idType = filter_input(INPUT_GET,'idType');
+    
+    echo getOffreProcheByType($latitude,$longitude,$idUtilisateur,$idType);
     
 }
 
@@ -93,14 +102,43 @@ function geMytOffer($id){
         return json_encode($array);
 }
 
-function getOffreProche($latitude,$longitude){
+function getOffreProche($latitude,$longitude,$idUtilisateur){
     //if($requestGet==NULL){
         $db = getDB();
         //requette calculant les 20 offre les plus proches
-        $requestGet = $db->prepare("SELECT Utilisateur.prenom ,(6378137 * (PI()/2 - ASIN( SIN((PI()*:lat /180)) * SIN((PI()*Position.latitude/180)) + COS((PI()*:long/180) -(PI()*Position.longitude/180)) * COS((PI()*Position.latitude/180)) *COS((PI()*:lat/180))))) as distance, Offre.* ,Utilisateur.numero from Position,Offre,Utilisateur where Position.idPosition = Offre.idPosition AND Utilisateur.idUtilisateur = Offre.idUtilisateur ORDER BY (6378137 * (PI()/2 - ASIN( SIN((PI()*:lat /180)) * SIN((PI()*Position.latitude/180)) + COS((PI()*:long/180) -(PI()*Position.longitude/180)) * COS((PI()*Position.latitude/180)) *COS((PI()*:lat/180)))))LIMIT 20");        
+        $requestGet = $db->prepare("SELECT Utilisateur.prenom ,(6378137 * (PI()/2 - ASIN( SIN((PI()*:lat /180)) * SIN((PI()*Position.latitude/180)) + COS((PI()*:long/180) -(PI()*Position.longitude/180)) * COS((PI()*Position.latitude/180)) *COS((PI()*:lat/180))))) as distance, Offre.* ,Utilisateur.numero from Position,Offre,Utilisateur where Position.idPosition = Offre.idPosition AND Utilisateur.idUtilisateur = Offre.idUtilisateur AND Utilisateur.idUtilisateur != :idUtilisateur ORDER BY (6378137 * (PI()/2 - ASIN( SIN((PI()*:lat /180)) * SIN((PI()*Position.latitude/180)) + COS((PI()*:long/180) -(PI()*Position.longitude/180)) * COS((PI()*Position.latitude/180)) *COS((PI()*:lat/180)))))LIMIT 20");        
     //}
     $requestGet->bindParam(':lat', $latitude,PDO::PARAM_LOB);
     $requestGet->bindParam(':long', $longitude,PDO::PARAM_LOB);
+    $requestGet->bindParam(':idUtilisateur', $idUtilisateur);
+    $requestGet->execute();
+    $data = $requestGet->fetchAll(PDO::FETCH_ASSOC);
+    $array = array();
+    foreach($data as $entry){
+		$obj = new Offre();
+                $obj->id =$entry['idOffre'];
+                $obj->prenom = $entry['prenom'];
+		$obj->lien = $entry['lienPhoto'];
+		$obj->description = $entry['description'];
+		$obj->date =$entry['datePeremption'];
+		$obj->idType =$entry['idType'];
+                $obj->distance = $entry['distance'];
+                $obj->contact = $entry['numero'];
+		$array[] = $obj;
+
+	}
+        return json_encode($array);
+}
+function getOffreProcheByType($latitude,$longitude,$idUtilisateur,$idType){
+    //if($requestGet==NULL){
+        $db = getDB();
+        //requette calculant les 20 offre les plus proches
+        $requestGet = $db->prepare("SELECT Utilisateur.prenom ,(6378137 * (PI()/2 - ASIN( SIN((PI()*:lat /180)) * SIN((PI()*Position.latitude/180)) + COS((PI()*:long/180) -(PI()*Position.longitude/180)) * COS((PI()*Position.latitude/180)) *COS((PI()*:lat/180))))) as distance, Offre.* ,Utilisateur.numero from Position,Offre,Utilisateur where Position.idPosition = Offre.idPosition AND Utilisateur.idUtilisateur = Offre.idUtilisateur AND Utilisateur.idUtilisateur != :idUtilisateur AND Offre.idType = :idType ORDER BY (6378137 * (PI()/2 - ASIN( SIN((PI()*:lat /180)) * SIN((PI()*Position.latitude/180)) + COS((PI()*:long/180) -(PI()*Position.longitude/180)) * COS((PI()*Position.latitude/180)) *COS((PI()*:lat/180)))))LIMIT 20");        
+    //}
+    $requestGet->bindParam(':lat', $latitude,PDO::PARAM_LOB);
+    $requestGet->bindParam(':long', $longitude,PDO::PARAM_LOB);
+    $requestGet->bindParam(':idUtilisateur', $idUtilisateur);
+    $requestGet->bindParam(':idType',$idType,PDO::PARAM_INT);
     $requestGet->execute();
     $data = $requestGet->fetchAll(PDO::FETCH_ASSOC);
     $array = array();

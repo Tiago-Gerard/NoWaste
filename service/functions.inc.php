@@ -19,6 +19,9 @@ static $requettePos = NULL;
 static $requettePosExiste = NULL;
 static $requestOffre = NULL;
 static $requestGetType=NULL;
+static $requetteGetPos=NULL;
+static $requettePosExiste =NULL;
+static $requestUpdateOffre=null;
 
 
 // Identifie si la si les headers envoyer avec la requette HTTP sont correcte
@@ -128,44 +131,42 @@ function verifieSiLaPosEstPareille($idOffre,$latitude,$longitude)
 {
     if($requettePosPareille==NULL){
         $db = getDB();
-        $requettePosPareille = $db->prepare("SELECT Position.* FROM Position,Offre where Offre.idPosition=Position.idPosition AND idOffre=:idOffre");
+        $requettePosPareille = $db->prepare("SELECT Position.* FROM Position,Offre where Offre.idPosition=Position.idPosition AND idOffre=:idOffre LIMIT 1");
         
     }
     $requettePosPareille->bindParam(':idOffre',$idOffre);
     $requettePosPareille->execute();
     $data = $requettePosPareille->fetchAll(PDO::FETCH_ASSOC);
-    return ($data['latitude']==$latitude&&$data['longitude']==$longitude);
+    return ($data[0]['latitude']==$latitude&&$data[0]['longitude']==$longitude);
 }
 
 function getIdPos($idOffre){
     if($requetteGetPos==NULL){
         $db = getDB();
-        $requetteGetPos= $db->prepare("SELECT idPosition FROM Offre WHERE idOffre = :idOffre");
+        $requetteGetPos= $db->prepare("SELECT idPosition FROM Offre WHERE idOffre = :idOffre LIMIT 1");
     }
     $requetteGetPos->bindParam(':idOffre',$idOffre);
     $requetteGetPos->execute();
     $data = $requetteGetPos->fetchAll(PDO::FETCH_ASSOC);
-    return $data['idPosition'];
+    return $data[0]['idPosition'];
 }
 
-function updateOffre($idOffre,$lienPhoto,$description,$datePeremption,$idUtilisateur,$idType,$idPosition){
+function updateOffre($idOffre,$description,$datePeremption,$idType,$idPosition){
     
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     
     if($requestUpdateOffre==NULL){
         $db = getDB();
-        $requestUpdateOffre = $db->prepare("UPDATE `Offre` SET `lienPhoto`=:lienPhoto,`description`=:description,`datePeremption`=:datePeremption,`idUtilisateur`=:idUtilisateur,`idType`=:idType,`idPosition`=:idPosition WHERE idOffre=:idOffre");
+        $requestUpdateOffre = $db->prepare("UPDATE `Offre` SET `description`=:description,`datePeremption`=:datePeremption,`idType`=:idType,`idPosition`=:idPosition WHERE idOffre=:idOffre");
     }
     $requestUpdateOffre->bindParam(':idOffre',$idOffre,PDO::PARAM_STR);
-    $requestUpdateOffre->bindParam(':lienPhoto',$lienPhoto,PDO::PARAM_STR);
     $requestUpdateOffre->bindParam(':description',$description,PDO::PARAM_STR);
     $requestUpdateOffre->bindParam(':datePeremption',$datePeremption);
-    $requestUpdateOffre->bindParam(':idUtilisateur',$idUtilisateur,PDO::PARAM_INT);
     $requestUpdateOffre->bindParam(':idType',$idType,PDO::PARAM_INT);
     $requestUpdateOffre->bindParam(':idPosition',$idPosition,PDO::PARAM_INT);  
     
     $requestUpdateOffre->execute(); 
-    
+    return json_encode(true);
     
 }
 

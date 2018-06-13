@@ -8,28 +8,32 @@
 	Auteur:			Tiago Gerard
 */
 
-//include '../functions.inc.php';
+include '../functions.inc.php';
 if(filter_has_var(INPUT_POST,"idOffre")){
+        $idPos=null;
         $latitude = filter_input(INPUT_POST,'latitude');
         $longitude = filter_input(INPUT_POST,'longitude');
         $idOffre = filter_input(INPUT_POST,'idOffre');
-        if(verifieSiLaPosEstPareille($idOffre, $latitude, $longitude)==FALSE){
+        if(verifieSiLaPosEstPareille($idOffre, $latitude, $longitude)==FALSE){            
+            $idPos = verifieSiLaPosexiste($latitude, $longitude);
+            $idPos = $idPos[0]['idPosition'];
+            if($idPos==null){
             $idPos = createPos($latitude, $longitude);
+            }
         }
         else{
             $idPos = getIdPos($idOffre);
-        }
-        
+        }       
         $lienPhoto = filter_input(INPUT_POST,'lienPhoto');
-        
-        if(verifieChangementImage($lienPhoto, $idOffre)==FALSE){
-            $lienPhoto = mettreImageSurServeur(array('.png','.jpg','.jpeg'));
-        }
+        /*if(verifieChangementImage($lienPhoto, $idOffre)==TRUE){
+            $lienPhoto = mettreImageSurServeur(array('.png','.jpg','.jpeg'),$_FILES['image']);
+        }*/
         $description = filter_input(INPUT_POST,'description');
         $datePeremption = filter_input(INPUT_POST,'datePeremption');
         $idUtilisateur = filter_input(INPUT_POST,'idUtilisateur');
         $idType = filter_input(INPUT_POST,'idType');
-        updateOffre($lienPhoto, $description, $datePeremption, $idUtilisateur, $idType,$idPos);
+        //$idOffre,$lienPhoto,$description,$datePeremption,$idType,$idPosition
+        echo updateOffre($idOffre, $description, $datePeremption, $idType,$idPos);
         
     
 }

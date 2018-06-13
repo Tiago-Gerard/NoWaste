@@ -1,6 +1,5 @@
 package com.example.gerardt_info.nowaste.Data;
 
-import android.app.Service;
 import android.util.Log;
 
 import com.example.gerardt_info.nowaste.models.Offre;
@@ -11,21 +10,21 @@ import java.util.List;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ServiceOffre {
+public class ServiceGetOffreByType {
 
     public interface Callbacks{
         void onResponse(List<Offre> offres);
         void onFailure();
     }
 
-    public static void getOffres(ServiceOffre.Callbacks callback,double latitude,double longitude,String idUtilisateur){
-        final WeakReference<ServiceOffre.Callbacks> callbacksWeakReference = new WeakReference<ServiceOffre.Callbacks>(callback);
+    public static void getOffresByType(ServiceGetOffreByType.Callbacks callback,double latitude,double longitude,String idUtilisateur,String idType){
+        final WeakReference<ServiceGetOffreByType.Callbacks> callbacksWeakReference = new WeakReference<ServiceGetOffreByType.Callbacks>(callback);
 
 
 
-        AccesService accesService = AccesService.retrofitGetOffre.create(AccesService.class);
+        AccesService accesService = AccesService.retrofitGetOffreByType.create(AccesService.class);
 
-        retrofit2.Call<List<Offre>> call = accesService.getOffre(latitude,longitude,idUtilisateur);
+        retrofit2.Call<List<Offre>> call = accesService.getOffreByType(latitude,longitude,idUtilisateur,idType);
 
         call.enqueue(new Callback<List<Offre>>() {
             @Override
@@ -47,4 +46,5 @@ public class ServiceOffre {
         });
     }
 }
+
 

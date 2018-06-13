@@ -1,6 +1,5 @@
 package com.example.gerardt_info.nowaste.controleurs;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -16,13 +15,10 @@ import android.view.animation.LayoutAnimationController;
 import com.bumptech.glide.Glide;
 import com.example.gerardt_info.nowaste.Data.ServiceDeleteMyOffer;
 import com.example.gerardt_info.nowaste.Data.ServiceMyOffre;
-import com.example.gerardt_info.nowaste.Data.ServiceOffre;
 import com.example.gerardt_info.nowaste.R;
-import com.example.gerardt_info.nowaste.Utils.ItemClickSupport;
+import com.example.gerardt_info.nowaste.Data.utils.ItemClickSupport;
 import com.example.gerardt_info.nowaste.models.MyOffer;
-import com.example.gerardt_info.nowaste.models.Offre;
 import com.example.gerardt_info.nowaste.views.MyOffreAdapter;
-import com.example.gerardt_info.nowaste.views.OffreAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +57,7 @@ public class FragmentMyOffer extends Fragment implements ServiceMyOffre.Callback
     }
 
     private void executeHttpRequestWithRetrofit() {
+
         ServiceMyOffre.getOffres(this,idUtilisateur);
     }
 

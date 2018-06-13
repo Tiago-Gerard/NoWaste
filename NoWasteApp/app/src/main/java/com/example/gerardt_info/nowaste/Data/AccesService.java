@@ -36,9 +36,22 @@ public interface AccesService {
     @GET("service/offer/get.php")
     Call<List<Offre>> getOffre(
             @Query("latitude") double lat,
-            @Query("longitude") double lon);
+            @Query("longitude") double lon,
+            @Query("idUtilisateur")String idUtilisateur);
 
     Retrofit retrofitGetOffre = new Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
+
+    @GET("service/offer/get.php")
+    Call<List<Offre>> getOffreByType(
+            @Query("latitude") double lat,
+            @Query("longitude") double lon,
+            @Query("idUtilisateur")String idUtilisateur,
+            @Query("idType")String idType);
+
+    Retrofit retrofitGetOffreByType = new Retrofit.Builder()
             .baseUrl(baseUrl)
             .addConverterFactory(GsonConverterFactory.create())
             .build();
@@ -79,8 +92,8 @@ public interface AccesService {
             @Part("name") RequestBody name,
             @Query("description") String description,
             @Query("datePeremption") String datePeremption,
-            @Query("latitude") String latitude,
-            @Query("longitude") String longitude,
+            @Query("latitude") double latitude,
+            @Query("longitude") double longitude,
             @Query("idUtilisateur") String idUtilisateur,
             @Query("idType") String idType);
     Retrofit retrofitCreateOffer = new Retrofit.Builder()
@@ -120,6 +133,20 @@ public interface AccesService {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
+
+    @POST("service/offer/update.php")
+    @FormUrlEncoded
+    Call<Boolean> updateOffer(
+            @Field("idOffre") String idOffre,
+            @Field("description") String description,
+            @Field("datePeremption") String datePeremption,
+            @Field("latitude") double latitude,
+            @Field("longitude") double longitude,
+            @Field("idType") String idType);
+    Retrofit retrofitUpdateOffer = new Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build();
 
 
 

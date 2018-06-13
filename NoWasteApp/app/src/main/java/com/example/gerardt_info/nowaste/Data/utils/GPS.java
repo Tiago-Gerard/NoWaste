@@ -1,4 +1,4 @@
-package com.example.gerardt_info.nowaste.metier;
+package com.example.gerardt_info.nowaste.Data.utils;
 
 import android.Manifest;
 import android.app.Activity;
