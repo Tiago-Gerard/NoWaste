@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements ServiceGetUser.Ca
                     // contacts-related task you need to do.
                     TelephonyManager tMgr = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
                     number = tMgr.getLine1Number();
+                    ServiceGetUser.getUser(this,number,number);
 
                 } else {
                     // permission denied, boo! Disable the

@@ -105,6 +105,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/editAdress"
-        android:text="Button" />
+        android:text="Date de paremption" />
 
 </RelativeLayout>

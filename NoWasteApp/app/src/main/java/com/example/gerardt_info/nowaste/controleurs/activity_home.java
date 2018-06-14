@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Path;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -36,7 +37,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.gerardt_info.nowaste.Data.ServiceCreateOffer;
@@ -60,12 +60,10 @@ import java.util.List;
 import java.util.Locale;
 public class activity_home extends AppCompatActivity implements LocationListener,ServiceCreateOffer.Callbacks,ServiceGetType.Callbacks,ServiceUpdate.Callbacks,DatePickerDialog.OnCancelListener, DatePickerDialog.OnDateSetListener {
 
-    private TextView mTextMessage;
     private FragmentOffer fragmentMain;
     private FragmentMyOffer fragmentMainMyOffer;
     private static Context instance;
     private Menu menu;
-    private static final int SELECT_PICTURE = 1;
     private LocationManager lm;
     private List<Address> a;
     private Geocoder g;
@@ -74,7 +72,6 @@ public class activity_home extends AppCompatActivity implements LocationListener
     private EditText editAdress;
     private EditText editPostal;
     private EditText editDesc;
-    private EditText editDatePeremption;
     private EditText editNom;
     private EditText editPrenom;
     private EditText editEmail;
@@ -128,8 +125,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        //TODO offer nav
-        //offerNav();
+        offerNav();
 
     }
     @Override
@@ -163,16 +159,13 @@ public class activity_home extends AppCompatActivity implements LocationListener
     }
     public void updateOffer(MyOffer myOffer){
         create=false;
+        setCreateOffer();
         this.myOffer = myOffer;
-        setContentView(R.layout.create_offre);
-        img = findViewById(R.id.imgOffre);
 
-        this.editDesc = findViewById(R.id.editDesc);
         //this.editDatePeremption = findViewById(R.id.editDate);
+        img = findViewById(R.id.imgOffre);
         this.editDesc.setText(myOffer.getDescription());
-        this.editDatePeremption.setText(myOffer.getDate());
-        this.editAdress = findViewById(R.id.editAdress);
-        this.editPostal = findViewById(R.id.editCodePostal);
+
         Glide.with(this).load("http://10.134.97.230/nowaste/service/img/"+myOffer.getLien()).into(img);
         Geocoder geocoder;
         List<Address> addresses=null;
@@ -224,19 +217,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.create_offer:
-                filter=false;
-
-                setContentView(R.layout.create_offre);
                 setCreateOffer();
-                getSupportActionBar().hide();
-                pb=findViewById(R.id.pbLocalisation);
-                pb.setVisibility(View.INVISIBLE);
-                editAdress = findViewById(R.id.editAdress);
-                editPostal = findViewById(R.id.editCodePostal);
-                sp = findViewById(R.id.spinner2);
-                //editDatePeremption=findViewById(R.id.editDate);
-                editDesc = findViewById(R.id.editDesc);
-                ServiceGetType.getType(this);
                 return true;
             case R.id.change_acc:
                 setSetting();
@@ -252,6 +233,32 @@ public class activity_home extends AppCompatActivity implements LocationListener
         }
 
     }
+    private void setCreateOffer(){
+        filter=false;
+        path = null;
+        setContentView(R.layout.create_offre);
+        getSupportActionBar().hide();
+        pb=findViewById(R.id.pbLocalisation);
+        pb.setVisibility(View.INVISIBLE);
+        editAdress = findViewById(R.id.editAdress);
+        editPostal = findViewById(R.id.editCodePostal);
+        sp = findViewById(R.id.spinner2);
+        //editDatePeremption=findViewById(R.id.editDate);
+        editDesc = findViewById(R.id.editDesc);
+        ServiceGetType.getType(this);
+
+        Calendar myDate = Calendar.getInstance();
+        int day = myDate.get (Calendar.DAY_OF_MONTH);
+        int year = myDate.get(Calendar.YEAR);
+        int month = myDate.get(Calendar.MONTH);
+        final DatePickerDialog datePickerDialog = new DatePickerDialog(this, activity_home.this, year, month,day );
+        ((Button) findViewById(R.id.datePicker)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                datePickerDialog.show();
+            }
+        });
+    }
 
 
     private void offerNav(){
@@ -264,7 +271,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
     }
 
     public void OnclickImage(View v){
-        Intent photoPickerIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, 0);
 
@@ -344,6 +351,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
     }
 
     public void OnClickAdd(View v){
+
         Address a = convertAddress(editAdress.getText().toString()+","+editPostal.getText().toString());
         if(create){
             addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),getStrDateFromDatePicker(datePicker),editDesc.getText().toString(),getIdTyoeFromText(),utilisateur.getIdUtilisateur());
@@ -497,6 +505,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
         return null;
     }
     private void setSetting(){
+
         setContentView(R.layout.modifi_cationcompte);
         getSupportActionBar().hide();
         editNom = findViewById(R.id.editNom);
@@ -540,19 +549,6 @@ public class activity_home extends AppCompatActivity implements LocationListener
     @Override
     public void onCancel(DialogInterface dialogInterface) {
 
-    }
-    private void setCreateOffer(){
-        Calendar myDate = Calendar.getInstance();
-        int day = myDate.get (Calendar.DAY_OF_MONTH);
-        int year = myDate.get(Calendar.YEAR);
-        int month = myDate.get(Calendar.MONTH);
-        final DatePickerDialog datePickerDialog = new DatePickerDialog(this, activity_home.this, year, month,day );
-        ((Button) findViewById(R.id.datePicker)).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        datePickerDialog.show();
-                    }
-                });
     }
 
     @Override
