@@ -24,14 +24,14 @@ if(filter_has_var(INPUT_SERVER,'PHP_AUTH_USER')){
 }
 if(filter_has_var(INPUT_GET,"idUtilisateur")&&(filter_has_var(INPUT_GET,"latitude")==false)){
     $idUtilisateur = filter_input(INPUT_GET,'idUtilisateur');
-    echo geMytOffer($idUtilisateur);
+    echo getMyOffer($idUtilisateur);
 }
 if(filter_has_var(INPUT_GET,"latitude")&&(filter_has_var(INPUT_GET,"idType")==false)){
     $latitude = filter_input(INPUT_GET, 'latitude');
     $longitude = filter_input(INPUT_GET, 'longitude');
     $idUtilisateur = filter_input(INPUT_GET,'idUtilisateur');
     
-    echo getOffreProche($latitude,$longitude,$idUtilisateur);
+    echo getNearOffer($latitude,$longitude,$idUtilisateur);
     
 }
 if(filter_has_var(INPUT_GET,"idType")){
@@ -40,7 +40,7 @@ if(filter_has_var(INPUT_GET,"idType")){
     $idUtilisateur = filter_input(INPUT_GET,'idUtilisateur');
     $idType = filter_input(INPUT_GET,'idType');
     
-    echo getOffreProcheByType($latitude,$longitude,$idUtilisateur,$idType);
+    echo getOfferNearByType($latitude,$longitude,$idUtilisateur,$idType);
     
 }
 

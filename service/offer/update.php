@@ -24,15 +24,10 @@ if(filter_has_var(INPUT_POST,"idOffre")){
         else{
             $idPos = getIdPos($idOffre);
         }       
-        $lienPhoto = filter_input(INPUT_POST,'lienPhoto');
-        /*if(verifieChangementImage($lienPhoto, $idOffre)==TRUE){
-            $lienPhoto = mettreImageSurServeur(array('.png','.jpg','.jpeg'),$_FILES['image']);
-        }*/
         $description = filter_input(INPUT_POST,'description');
         $datePeremption = filter_input(INPUT_POST,'datePeremption');
         $idUtilisateur = filter_input(INPUT_POST,'idUtilisateur');
         $idType = filter_input(INPUT_POST,'idType');
-        //$idOffre,$lienPhoto,$description,$datePeremption,$idType,$idPosition
         echo updateOffre($idOffre, $description, $datePeremption, $idType,$idPos);
         
     

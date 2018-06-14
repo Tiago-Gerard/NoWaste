@@ -1,3 +1,10 @@
+
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : ServiceUpdate.java
+ * */
 package com.example.gerardt_info.nowaste.Data;
 
 import android.util.Log;
@@ -10,9 +17,12 @@ import java.util.List;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ServiceUpdate { public interface Callbacks{
-    void onResponse(Boolean utilisateurs);
-    void onFailure();
+public class ServiceUpdate {
+
+    // interface de listener pour récuperer les reponses serveurs
+    public interface Callbacks{
+        void onResponse(Boolean utilisateurs);
+        void onFailure();
 }
 
     public static void updateUser(ServiceUpdate.Callbacks callback,String prenom,String nom,String email,String numero,String idUtilisateur){

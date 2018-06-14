@@ -17,10 +17,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : MyOfferViewHolder
+ * */
 public class MyOfferViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
 
-
+    //associe les élements de la vue avec leur instance en java
     @BindView(R.id.txvName)
     TextView txvName;
     @BindView(R.id.txvDesc)
@@ -42,6 +48,7 @@ public class MyOfferViewHolder extends RecyclerView.ViewHolder implements View.O
 
     }
 
+    //met à jours une card avec une offre
     public void updateWithOffer(MyOffer offre, RequestManager glide,MyOffreAdapter.Listener callback){
         this.txvName.setText(offre.getPrenom());
         this.txvNum.setText(offre.getContact());

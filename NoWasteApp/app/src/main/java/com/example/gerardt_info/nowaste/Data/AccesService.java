@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : AccesService.java
+ * */
 package com.example.gerardt_info.nowaste.Data;
 
 
@@ -31,6 +37,7 @@ import com.example.gerardt_info.nowaste.Data.Outils;
 
 public interface AccesService {
 
+    //liste des accés à la base de données
     final String baseUrl ="http://10.134.97.230/nowaste/";
 
     @GET("service/offer/get.php")

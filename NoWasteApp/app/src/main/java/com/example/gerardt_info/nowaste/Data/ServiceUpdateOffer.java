@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : ServiceUpdateOffer.java
+ * */
 package com.example.gerardt_info.nowaste.Data;
 
 import android.util.Log;
@@ -7,9 +13,12 @@ import java.lang.ref.WeakReference;
 ;
 import retrofit2.Response;
 
-public class ServiceUpdateOffer { public interface Callbacks{
-    void onResponse(Boolean bool );
-    void onFailure();
+public class ServiceUpdateOffer {
+
+    // interface de listener pour récuperer les reponses serveurs
+    public interface Callbacks{
+        void onResponse(Boolean bool );
+        void onFailure();
 }
 
     public static void updateOffer(ServiceCreateOffer.Callbacks callback,String idOffer,String description,String datePeremption,String idType,double longitude,double latitude){

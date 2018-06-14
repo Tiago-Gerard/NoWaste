@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : FragmentMyOffer.java
+ * */
 package com.example.gerardt_info.nowaste.controleurs;
 
 import android.os.Bundle;
@@ -30,6 +36,7 @@ public class FragmentMyOffer extends Fragment implements ServiceMyOffre.Callback
     @BindView(R.id.main_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.swipe) SwipeRefreshLayout swipeRefreshLayout;
 
+    //propriétées permettant la recherche des offre de l'utilisateur
     private List<MyOffer> offres;
     private MyOffreAdapter adapter;
 
@@ -42,9 +49,13 @@ public class FragmentMyOffer extends Fragment implements ServiceMyOffre.Callback
     public FragmentMyOffer() {
 
     }
+
+    //efface le fragment
     public void delete(){
         getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
     }
+
+    //constructeur du fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
@@ -55,6 +66,7 @@ public class FragmentMyOffer extends Fragment implements ServiceMyOffre.Callback
         configureOnClickRecyclerView();
         return view;
     }
+
 
     private void executeHttpRequestWithRetrofit() {
 
@@ -88,14 +100,14 @@ public class FragmentMyOffer extends Fragment implements ServiceMyOffre.Callback
             }
         });
     }
+        //implemente un lsitener pour le bouton supprimer une offre
         @Override
         public void onClickDeleteButton(int position) {
             MyOffer offre = adapter.getMyOffer(position);
-
             ServiceDeleteMyOffer.deleteOffer(this,offre.getId());
-
         }
 
+        //met à jours les cards
     private void updateUI(List<MyOffer> offres){
         this.offres.clear();
         this.offres.addAll(offres);
@@ -108,12 +120,14 @@ public class FragmentMyOffer extends Fragment implements ServiceMyOffre.Callback
         this.recyclerView.scheduleLayoutAnimation();
     }
 
+    //la reponse du serveur avec la liste des offres de l'utilisateur
     @Override
     public void onResponse(List<MyOffer> offres)
     {
             updateUI(offres);
     }
 
+    //la reponse du serveur pour une suppression d'offre
     @Override
     public void onResponse(Boolean response) {
             executeHttpRequestWithRetrofit();

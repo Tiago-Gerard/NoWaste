@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : Outils.java
+ * */
 package com.example.gerardt_info.nowaste.Data;
 
 import java.io.IOException;
@@ -14,7 +20,7 @@ public class Outils {
     static private String pass;
 
 
-
+    // set les headers pour les envoyer au serveur
     static public void setHeaders(String telephone,String pass){
         Outils.telephone= telephone;
         Outils.pass=pass;

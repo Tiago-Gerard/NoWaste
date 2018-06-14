@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : ServiceGetUser.java
+ * */
 package com.example.gerardt_info.nowaste.Data;
 
 import android.util.Log;
@@ -13,6 +19,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ServiceGetUser {
+
+    // interface de listener pour récuperer les reponses serveurs
     public interface Callbacks{
         void onResponse(List<Utilisateur> utilisateurs);
         void onFailure();

@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : ServiceGetOffreByType.java
+ * */
 package com.example.gerardt_info.nowaste.Data;
 
 import android.util.Log;
@@ -12,6 +18,7 @@ import retrofit2.Response;
 
 public class ServiceGetOffreByType {
 
+    // interface de listener pour récuperer les reponses serveurs
     public interface Callbacks{
         void onResponse(List<Offre> offres);
         void onFailure();

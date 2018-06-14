@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : Type.java
+ * */
 package com.example.gerardt_info.nowaste.models;
 
 import com.google.gson.annotations.Expose;

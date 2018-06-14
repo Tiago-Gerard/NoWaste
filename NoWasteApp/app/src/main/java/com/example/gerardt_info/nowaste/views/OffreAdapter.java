@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : OffreAdapter
+ * */
 package com.example.gerardt_info.nowaste.views;
 
 import android.content.Context;
@@ -24,6 +30,7 @@ public class OffreAdapter  extends RecyclerView.Adapter<OfferViewHolder>{
         this.glide = glide;
     }
 
+
     @NonNull
     @Override
     public OfferViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,6 +46,7 @@ public class OffreAdapter  extends RecyclerView.Adapter<OfferViewHolder>{
     public void onBindViewHolder(OfferViewHolder holder, int position) {
         holder.updateWithOffer(this.offres.get(position), this.glide);
     }
+
 
     @Override
     public int getItemCount() {

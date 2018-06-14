@@ -1,3 +1,9 @@
+/*
+* Projet  : No Waste
+* Auteur  : Tiago Gerard
+* Version : 1.0
+* Fichier : activity_home.java
+* */
 package com.example.gerardt_info.nowaste.controleurs;
 
 import android.Manifest;
@@ -10,7 +16,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Path;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -38,7 +43,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.example.gerardt_info.nowaste.Data.ServiceCreateOffer;
 import com.example.gerardt_info.nowaste.Data.ServiceGetType;
@@ -49,7 +53,6 @@ import com.example.gerardt_info.nowaste.Data.utils.GPS;
 import com.example.gerardt_info.nowaste.models.MyOffer;
 import com.example.gerardt_info.nowaste.models.Type;
 import com.example.gerardt_info.nowaste.models.Utilisateur;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +62,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+//controleur de la page home
 public class activity_home extends AppCompatActivity implements LocationListener,ServiceCreateOffer.Callbacks,ServiceGetType.Callbacks,ServiceUpdate.Callbacks,DatePickerDialog.OnCancelListener, DatePickerDialog.OnDateSetListener {
+
 
     private FragmentOffer fragmentMain;
     private FragmentMyOffer fragmentMainMyOffer;
@@ -87,14 +93,13 @@ public class activity_home extends AppCompatActivity implements LocationListener
     boolean create = true;
     boolean filter = true;
     MyOffer myOffer;
-    private String idType;
     private DatePicker datePicker;
-    private Boolean imgChanged;
 
-
+    //instanciation des manu de navigation
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
+        // evenement onclick du menu de navigationn
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
@@ -110,13 +115,15 @@ public class activity_home extends AppCompatActivity implements LocationListener
             return false;
         }
     };
+    // construit et affiche la vue contenant les offres de l'utilisateur
     private void myOfferNav(){
         setTitle("Mes Offre");
-
+        //efface de la memoire le fragment des offres proches
         deleteMainFragment();
         configureAndShowMainFragmentMyOffer();
     }
 
+    // constructeur du controleur activity_home.java
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,14 +137,17 @@ public class activity_home extends AppCompatActivity implements LocationListener
         offerNav();
 
     }
+
+    //configure le menu de l'action bar
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         //ajoute les entrées de menu_test à l'ActionBar
         getMenuInflater().inflate(R.menu.menu, menu);
         this.menu = menu;
-
         return true;
     }
+
+    //configure le main fragment contenant les offres proches
     private void configureAndShowMainFragment() {
 
         fragmentMain = (FragmentOffer) getSupportFragmentManager().findFragmentById(R.id.recycler_container);
@@ -149,7 +159,6 @@ public class activity_home extends AppCompatActivity implements LocationListener
             fragmentMain.setIdUtilisateur(utilisateur.getIdUtilisateur());
             getSupportFragmentManager().beginTransaction().add(R.id.recycler_container, fragmentMain).commit();
             pgrsLoading.setVisibility(View.INVISIBLE);
-
         }
         else{
             fragmentMain.setLatitude(latitude);
@@ -157,6 +166,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
             fragmentMain.setIdUtilisateur(utilisateur.getIdUtilisateur());
         }
     }
+
+    //montre la vue update avec les données de l'offre sélectionnée
     public void updateOffer(MyOffer myOffer){
         create=false;
         setCreateOffer();
@@ -186,6 +197,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
             editPostal.setText(postalCode);
         }
     }
+
+    //efface le fragment contenant les offres proches
     private void deleteMainFragment(){
         if(fragmentMain!=null){
             fragmentMain.delete();
@@ -194,6 +207,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
 
     }
+    //configure le main fragment contenant les offres de l'utilisateur
     private void configureAndShowMainFragmentMyOffer() {
 
         fragmentMainMyOffer = (FragmentMyOffer) getSupportFragmentManager().findFragmentById(R.id.recycler_container_my_offer);
@@ -205,6 +219,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
         }
     }
+
+    //efface le fragment contenant les offres de l'utilisateur
     private void deleteMyOffer(){
         if(fragmentMainMyOffer!=null){
             fragmentMainMyOffer.delete();
@@ -212,6 +228,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
         }
     }
 
+    //listener de l'évenement onclick des menus de l'action bar
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -225,14 +242,14 @@ public class activity_home extends AppCompatActivity implements LocationListener
             case R.id.filter:
                 filter=true;
                 ServiceGetType.getType(this);
-
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 
     }
+
+    //configure et montre la vue pour créer une offre
     private void setCreateOffer(){
         filter=false;
         path = null;
@@ -260,7 +277,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
         });
     }
 
-
+    // construit et affiche la vue contenant les offres proches
     private void offerNav(){
         setTitle("Offre");
         deleteMyOffer();
@@ -273,6 +290,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
     }
 
+    //listener de l'évenement onclick de l'image pour sélectionner un photo
     public void OnclickImage(View v){
         if(create){
             Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
@@ -280,6 +298,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
             startActivityForResult(photoPickerIntent, 0);
         }
     }
+
+    //récupère la localisation et lance la recherche d'offre en fonction de cette position
     @SuppressLint("MissingPermission")
     public void getLocation() {
         pb=findViewById(R.id.pgrBar);
@@ -306,6 +326,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
         };
         runnable.run();
     }
+
+    //récupère la latitude et longitude du GPS pour donner une position à une offre
     @SuppressLint("MissingPermission")
     public void onClickButtonLoc(View v) {
         pb = findViewById(R.id.pbLocalisation);
@@ -347,6 +369,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
         lm.removeUpdates(this);
     }
 
+    //listener de l'événement du bouton retour d'android, retourne à la vue contenant les offres
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(this,activity_home.class);
@@ -354,15 +377,17 @@ public class activity_home extends AppCompatActivity implements LocationListener
         startActivity(intent);
     }
 
+    //listener de l'évenement onclick du bouton pour ajouter une offre
     public void OnClickAdd(View v){
 
+        //verifie si tous les champs sont remplis
         if(editPostal.getText().toString().isEmpty()||editAdress.getText().toString().isEmpty()||editDesc.getText().toString().isEmpty()||path.isEmpty()){
             Toast.makeText(instance, "Tous les champs doivent être renseignés", Toast.LENGTH_SHORT).show();
         }
         else{
             Address a = convertAddress(editAdress.getText().toString()+","+editPostal.getText().toString());
             if(create){
-                addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),getStrDateFromDatePicker(datePicker),editDesc.getText().toString(),getIdTyoeFromText(),utilisateur.getIdUtilisateur());
+                addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),getStrDateFromDatePicker(datePicker),editDesc.getText().toString(), getIdTypeFromText(),utilisateur.getIdUtilisateur());
             }
             else{
                 ServiceUpdateOffer.updateOffer(this,myOffer.getId(),editDesc.getText().toString(),getStrDateFromDatePicker(datePicker),myOffer.getIdType(),a.getLongitude(),a.getLatitude());
@@ -391,6 +416,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
     public void onProviderDisabled(String provider) {
 
     }
+
+    //methode apelée une fois l'image sélectionné
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
         if (resultCode == RESULT_OK) {
@@ -418,6 +445,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
             //Toast.makeText(LoginActivity.this, "You haven't picked Image",Toast.LENGTH_LONG).show();
         }
     }
+
+    //retourne un objet Adress depuis une chaine contenant la rue, le numero de rue et le npa
     private Address convertAddress(String adress){
         Geocoder coder = new Geocoder(this);
         List<Address> address;
@@ -445,6 +474,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
         return location;
     }
+
+    //récupère le chemin de l'image graçe à son URI
     public String getRealPathFromURI(Uri contentUri) {
 
         // can post image
@@ -459,19 +490,21 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
         return cursor.getString(column_index);
     }
+
+    //Envoie une offre sur le service web
     private void addOfferOnServeur(String path,double latitude,double longitude, String datePeremption,String description,String idType,String idUtilisateur){
         ServiceCreateOffer.createUser(this,description,datePeremption,idType,longitude,latitude,path,idUtilisateur);
     }
 
+    //retour réussis de l'ajout ou la modification d'une offre
     @Override
     public void onResponse(Boolean bool) {
-            setContentView(R.layout.activity_home);
-            getSupportActionBar().show();
         Intent intent = new Intent(this,activity_home.class);
         intent.putExtra("Utilisateur",utilisateur);
         startActivity(intent);
     }
 
+    //réponse du serveur à la demande des type
     @Override
     public void onResponse(List<Type> types) {
         this.types = types;
@@ -485,10 +518,13 @@ public class activity_home extends AppCompatActivity implements LocationListener
     }
 
 
+    //reponse avec une erreur du serveur
     @Override
     public void onFailure() {
         Log.e("Http request","ERROR");
     }
+
+    //configure la combobox avec les types disponibles
     private void setSpinner() {
         // you need to have a list of data that you want the spinner to display
         List<String> spinnerArray = new ArrayList<String>();
@@ -503,7 +539,9 @@ public class activity_home extends AppCompatActivity implements LocationListener
         Spinner sItems = (Spinner) sp;
         sItems.setAdapter(adapter);
     }
-    private String getIdTyoeFromText(){
+
+    //retourne l'id du type depuis l'item sélectionné du combobox
+    private String getIdTypeFromText(){
         String text = sp.getSelectedItem().toString();
         for (Type t:types)
         {
@@ -514,6 +552,8 @@ public class activity_home extends AppCompatActivity implements LocationListener
         }
         return null;
     }
+
+    //configure et montre la vue pour modifier le compte utilisateur
     private void setSetting(){
 
         setContentView(R.layout.modifi_cationcompte);
@@ -527,10 +567,13 @@ public class activity_home extends AppCompatActivity implements LocationListener
         editEmail.setText(utilisateur.getEmail());
         editNumero.setText(utilisateur.getNumero());
     }
+
+    //listener de l'évenement onclick du bouton pour modifier une offre
     public void OnClickModifie(View v){
         ServiceUpdate.updateUser(this,editPrenom.getText().toString(),editNom.getText().toString(),editEmail.getText().toString(),editNumero.getText().toString(),utilisateur.getIdUtilisateur());
-
     }
+
+    //Ouvre un dialog contenant les type de filtres
     public void alertSpinner() {
         AlertDialog.Builder b = new AlertDialog.Builder(this);
 
@@ -542,11 +585,10 @@ public class activity_home extends AppCompatActivity implements LocationListener
         }
         b.setItems(filtre, new DialogInterface.OnClickListener() {
 
+            //listenener du onclick de dialog
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
-                idType = types.get(which).getIdType();
-
                 offerNav();
                 setTitle("Offre ("+types.get(which).getNom()+")");
                 fragmentMain.setIdType(types.get(which).getIdType());
@@ -564,12 +606,14 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
     }
 
+    //listenenr du de la reponse du datepicker
     @Override
     public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
         this.datePicker = datePicker;
         //getStrDateFromDatePicker(datePicker);
     }
 
+    //retourne une chaine formater depuis un date picker
     public static String getStrDateFromDatePicker(DatePicker datePicker){
         int day = datePicker.getDayOfMonth();
         int month = datePicker.getMonth();

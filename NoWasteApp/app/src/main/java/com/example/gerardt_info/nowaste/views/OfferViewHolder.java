@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : OfferViewHolder
+ * */
 package com.example.gerardt_info.nowaste.views;
 
 import android.support.v7.widget.RecyclerView;
@@ -18,7 +24,7 @@ import butterknife.ButterKnife;
 
 public class OfferViewHolder extends RecyclerView.ViewHolder{
 
-
+    //associe les élements de la vue avec leur instance en java
     @BindView(R.id.txvDistance)
     TextView txvDistance;
     @BindView(R.id.txvName)
@@ -39,6 +45,7 @@ public class OfferViewHolder extends RecyclerView.ViewHolder{
 
     }
 
+    //met à jours une card avec une offre
     public void updateWithOffer(Offre offre, RequestManager glide){
         this.txvName.setText(offre.getPrenom());
         this.txvNum.setText(offre.getContact());

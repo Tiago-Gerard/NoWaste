@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : FragmentOffer.java
+ * */
 package com.example.gerardt_info.nowaste.controleurs;
 
 import android.content.Intent;
@@ -31,6 +37,7 @@ public class FragmentOffer extends Fragment implements ServiceOffre.Callbacks,Se
     @BindView(R.id.main_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.swipe) SwipeRefreshLayout swipeRefreshLayout;
 
+    //propriétées permettant la recherche des offres proches
     private List<Offre> offres;
     private OffreAdapter adapter;
 
@@ -89,6 +96,8 @@ public class FragmentOffer extends Fragment implements ServiceOffre.Callbacks,Se
             }
         });
     }
+
+    //efface le fragment
     public void delete(){
         getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
     }
@@ -99,15 +108,13 @@ public class FragmentOffer extends Fragment implements ServiceOffre.Callbacks,Se
         this.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
-
-
-
+    //met à jours les cards
     private void updateUI(List<Offre> offres){
         this.offres.clear();
         this.offres.addAll(offres);
+
         adapter.notifyDataSetChanged();
         swipeRefreshLayout.setRefreshing(false);
-
         LayoutAnimationController controller = AnimationUtils.loadLayoutAnimation(getActivity(), R.anim.layout_animation_fall_down);
 
         this.recyclerView.setLayoutAnimation(controller);
@@ -115,7 +122,7 @@ public class FragmentOffer extends Fragment implements ServiceOffre.Callbacks,Se
     }
 
 
-
+    //la reponse du serveur avec la liste des offres proches
     @Override
     public void onResponse(List<Offre> offres) {
         updateUI(offres);

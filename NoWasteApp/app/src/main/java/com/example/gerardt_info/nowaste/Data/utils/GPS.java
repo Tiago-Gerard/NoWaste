@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : GPS.java
+ * */
 package com.example.gerardt_info.nowaste.Data.utils;
 
 import android.Manifest;

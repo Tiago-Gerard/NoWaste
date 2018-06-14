@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : ServiceOffre.java
+ * */
 package com.example.gerardt_info.nowaste.Data;
 
 import android.app.Service;
@@ -13,6 +19,7 @@ import retrofit2.Response;
 
 public class ServiceOffre {
 
+    // interface de listener pour récuperer les reponses serveurs
     public interface Callbacks{
         void onResponse(List<Offre> offres);
         void onFailure();

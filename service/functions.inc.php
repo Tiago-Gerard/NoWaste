@@ -14,7 +14,6 @@ require "../pdo.php";
 //Les requettes preparées sous forme d'un singleton
 static $requestLogin = NULL;
 static $requestGetOffer=NULL;
-static $requettteImage=NULL;
 static $requettePos = NULL;
 static $requettePosExiste = NULL;
 static $requestOffre = NULL;
@@ -28,11 +27,13 @@ static $requestUpdate=NULL;
 static $requestGetUser=NULL;
 static $requestGetOffer=NULL;
 static $requestDelete=NULL;
+static $requestGet =NULL;
 
 /*
-	Classe pour modéliser une école 
+	Classe pour modéliser une Offre 
 	
 	id: 			L'id de l'offre
+ *      prenom:                 le prenom du detenteur de l'offre
 	lien: 			Lien de l'image
         description:            La déscription de l'offre
 	date:			La date de peremption de l'offre
@@ -51,6 +52,19 @@ class Offre{
         public $contact;
 }
 
+/*
+	Classe pour modéliser une Offre 
+	
+	id: 			L'id de l'offre
+ *      prenom:                 le prenom du detenteur de l'offre
+	lien: 			Lien de l'image
+        description:            La déscription de l'offre
+	date:			La date de peremption de l'offre
+	type:			le Type de l'offre
+ *      latitude:               la latitude de la position
+ *      longitude:              la longitude de la position
+ *      contact:                le contact de l'utilisateur email ou téléphone
+*/
 class MyOffre{
         public $id;
         public $prenom;
@@ -63,7 +77,7 @@ class MyOffre{
         public $contact;
 }
 /*
-	Classe pour modéliser une école 
+	Classe pour modéliser un utilisateur 
 	
 	id: 			L'id de l'utilisateur
 	Nom: 			Nom de l'utilisateur
@@ -100,21 +114,7 @@ function login($numero,$pwd){
     return json_encode($array);
 }
 
-
-//
-function verifieChangementImage($lien,$idOffre)
-{
-   
-    if($requetteImage==NULL){
-        $db = getDB();
-        $requetteImage = $db->prepare("SELECT `lienPhoto` FROM `Offre` WHERE `idOffre`=:idOffre");
-    }
-    $requetteImage->bindParam(':idOffre', $idOffre);
-    $requetteImage->execute();
-    $data = $requetteImage->fetchAll(PDO::FETCH_ASSOC);
-    return ($data['lienPhoto']==$lien);
-}
-
+//met une image sur le serveur et construit un nom unique
 function mettreImageSurServeur( $ext,$img) {
     if (isset($img)) {     
         $dossier = "../img/";
@@ -139,8 +139,11 @@ function mettreImageSurServeur( $ext,$img) {
         }
     }
 }
+
+//verifier si une positione existe deja dans la base
 function verifieSiLaPosexiste($latitude,$longitude)
 {
+    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requettePosExiste==NULL){
         $db = getDB();
         $requettePosExiste = $db->prepare("SELECT Position.idPosition FROM Position where latitude=:latitude AND longitude = :longitude");
@@ -152,7 +155,7 @@ function verifieSiLaPosexiste($latitude,$longitude)
     $data = $requettePosExiste->fetchAll(PDO::FETCH_ASSOC);
     return $data;
 }
-
+//créer une nouvelle offre
 function createOffre($lienPhoto,$description,$datePeremption,$idUtilisateur,$idType,$idPos){
     
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
@@ -169,7 +172,9 @@ function createOffre($lienPhoto,$description,$datePeremption,$idUtilisateur,$idT
     $requestOffre->execute();
     return json_encode(true);
 }
+//créer une nouvelle position
 function createPos($latitude,$longitude){
+    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requestPos == NULL){
         $db= getDB();
         $requestPos = $db->prepare("INSERT INTO `Position`(`latitude`, `longitude`) VALUES (:latitude,:longitude)");
@@ -181,8 +186,10 @@ function createPos($latitude,$longitude){
     return $lastId;
 }
 
+//verifier si un mouvelle position est pareille que celle deja assigner
 function verifieSiLaPosEstPareille($idOffre,$latitude,$longitude)
 {
+    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requettePosPareille==NULL){
         $db = getDB();
         $requettePosPareille = $db->prepare("SELECT Position.* FROM Position,Offre where Offre.idPosition=Position.idPosition AND idOffre=:idOffre LIMIT 1");
@@ -194,7 +201,9 @@ function verifieSiLaPosEstPareille($idOffre,$latitude,$longitude)
     return ($data[0]['latitude']==$latitude&&$data[0]['longitude']==$longitude);
 }
 
+//retourne la position d'une offre
 function getIdPos($idOffre){
+    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requetteGetPos==NULL){
         $db = getDB();
         $requetteGetPos= $db->prepare("SELECT idPosition FROM Offre WHERE idOffre = :idOffre LIMIT 1");
@@ -204,11 +213,10 @@ function getIdPos($idOffre){
     $data = $requetteGetPos->fetchAll(PDO::FETCH_ASSOC);
     return $data[0]['idPosition'];
 }
-
+//met à jour une offre
 function updateOffre($idOffre,$description,$datePeremption,$idType,$idPosition){
     
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
-    
     if($requestUpdateOffre==NULL){
         $db = getDB();
         $requestUpdateOffre = $db->prepare("UPDATE `Offre` SET `description`=:description,`datePeremption`=:datePeremption,`idType`=:idType,`idPosition`=:idPosition WHERE idOffre=:idOffre");
@@ -223,7 +231,9 @@ function updateOffre($idOffre,$description,$datePeremption,$idType,$idPosition){
     return json_encode(true);
     
 }
+//éfface l'offre correspondante à l'id
 function deleteOffre($idOffre){
+    //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requestDelete == NULL){
         $db = getDB();
     $requestDelete = $db->prepare("DELETE FROM `Offre` WHERE Offre.idOffre=:idOffre");
@@ -233,7 +243,8 @@ function deleteOffre($idOffre){
     $requestDelete->execute();
     return json_encode(true);
 }
-function geMytOffer($id){
+//retourne les offre de l'utilisateur
+function getMyOffer($id){
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requestGetOffer==NULL){
         $db = getDB();
@@ -259,12 +270,13 @@ function geMytOffer($id){
 	}
         return json_encode($array);
 }
-function getOffreProcheByType($latitude,$longitude,$idUtilisateur,$idType){
-    //if($requestGet==NULL){
+//retourne les offres d'un certain type par par distance
+function getOfferNearByType($latitude,$longitude,$idUtilisateur,$idType){
+    if($requestGet==NULL){
         $db = getDB();
         //requette calculant les 20 offre les plus proches
         $requestGet = $db->prepare("SELECT Utilisateur.prenom ,(6378137 * (PI()/2 - ASIN( SIN((PI()*:lat /180)) * SIN((PI()*Position.latitude/180)) + COS((PI()*:long/180) -(PI()*Position.longitude/180)) * COS((PI()*Position.latitude/180)) *COS((PI()*:lat/180))))) as distance, Offre.* ,Utilisateur.numero from Position,Offre,Utilisateur where Position.idPosition = Offre.idPosition AND Utilisateur.idUtilisateur = Offre.idUtilisateur AND Utilisateur.idUtilisateur != :idUtilisateur AND Offre.idType = :idType ORDER BY (6378137 * (PI()/2 - ASIN( SIN((PI()*:lat /180)) * SIN((PI()*Position.latitude/180)) + COS((PI()*:long/180) -(PI()*Position.longitude/180)) * COS((PI()*Position.latitude/180)) *COS((PI()*:lat/180)))))LIMIT 20");        
-    //}
+    }
     $requestGet->bindParam(':lat', $latitude,PDO::PARAM_LOB);
     $requestGet->bindParam(':long', $longitude,PDO::PARAM_LOB);
     $requestGet->bindParam(':idUtilisateur', $idUtilisateur);
@@ -287,7 +299,9 @@ function getOffreProcheByType($latitude,$longitude,$idUtilisateur,$idType){
 	}
         return json_encode($array);
 }
-function getOffreProche($latitude,$longitude,$idUtilisateur){
+
+//retourne les offres classer par distance abec la position donnée
+function getNearOffer($latitude,$longitude,$idUtilisateur){
     //if($requestGet==NULL){
         $db = getDB();
         //requette calculant les 20 offre les plus proches
@@ -314,6 +328,8 @@ function getOffreProche($latitude,$longitude,$idUtilisateur){
 	}
         return json_encode($array);
 }
+
+//retourne tous les types
 function getTypes(){
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requestGetType==NULL){
@@ -349,6 +365,8 @@ function getUser($numero,$pwd){
 	}
             return json_encode($array);  
 }
+
+//met à jour l'utitilisateur
 function update($idUtilisateur,$nom,$prenom,$numero,$email){
     if($requestUpdate==NULL){
         $db = getDB();
@@ -362,6 +380,7 @@ function update($idUtilisateur,$nom,$prenom,$numero,$email){
     return json_encode(true);
     
 }
+//céer un utilisateur
 function createUser($nom,$prenom,$numero,$email){
     //mise en place d'un singleton pour gagner du temp sur les requette si elle ont deja été faites une fois
     if($requestCreate==NULL){

@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : MyOffreAdapter
+ * */
 package com.example.gerardt_info.nowaste.views;
 
 import android.content.Context;

@@ -1,3 +1,9 @@
+/*
+ * Projet  : No Waste
+ * Auteur  : Tiago Gerard
+ * Version : 1.0
+ * Fichier : MainActivity.java
+ * */
 package com.example.gerardt_info.nowaste.controleurs;
 
 import android.Manifest;
@@ -34,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements ServiceGetUser.Ca
     EditText editNom;
     EditText editEmail;
 
+    //constructeur du controleur de la vue de création de compte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,37 +57,25 @@ public class MainActivity extends AppCompatActivity implements ServiceGetUser.Ca
         ServiceGetUser.getUser(this,number,number);
     }
 
-    //Intent intent = new Intent(this,activity_home.class);
-    // startActivity(intent);
+
 
 
 
     private void checkPermission(){
-
-        // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Permission is not granted
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.READ_PHONE_STATE)) {
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
             }
             else {
-                // No explanation needed; request the permission
                 ActivityCompat.requestPermissions(this,
                         new String[]{Manifest.permission.READ_PHONE_STATE},
                         MY_PERMISSIONS_REQUEST_READ_PHONE_STATE);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
             }
-        } else {
+        }
+        else {
             // Permission has already been granted
             TelephonyManager tMgr = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
             number = tMgr.getLine1Number();
@@ -95,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements ServiceGetUser.Ca
             ServiceCreateUser.createUser(this,editPrenom.getText().toString(),editNom.getText().toString(),editEmail.getText().toString(),editNumero.getText().toString());
             ServiceGetUser.getUser(this,number,number);
         }
-
         }
     @SuppressLint("MissingPermission")
     @Override
@@ -122,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements ServiceGetUser.Ca
             // permissions this app might request.
         }
     }
-
+    //la reponse du serveur avec un utilisateur si un compte correspond au numéro envoyé
     @Override
     public void onResponse(List<Utilisateur> utilisateurs) {
         if(utilisateurs.size()!=0){
