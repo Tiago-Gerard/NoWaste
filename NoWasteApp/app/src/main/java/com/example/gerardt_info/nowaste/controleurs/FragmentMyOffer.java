@@ -91,7 +91,7 @@ public class FragmentMyOffer extends Fragment implements ServiceMyOffre.Callback
         @Override
         public void onClickDeleteButton(int position) {
             MyOffer offre = adapter.getMyOffer(position);
-            //Toast.makeText(getContext(), "You are trying to delete user : "+user.getLogin(), Toast.LENGTH_SHORT).show();
+
             ServiceDeleteMyOffer.deleteOffer(this,offre.getId());
 
         }

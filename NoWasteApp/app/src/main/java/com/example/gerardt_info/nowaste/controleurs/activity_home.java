@@ -37,6 +37,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.gerardt_info.nowaste.Data.ServiceCreateOffer;
@@ -88,6 +89,7 @@ public class activity_home extends AppCompatActivity implements LocationListener
     MyOffer myOffer;
     private String idType;
     private DatePicker datePicker;
+    private Boolean imgChanged;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -145,7 +147,6 @@ public class activity_home extends AppCompatActivity implements LocationListener
             fragmentMain.setLatitude(latitude);
             fragmentMain.setLongitude(longitude);
             fragmentMain.setIdUtilisateur(utilisateur.getIdUtilisateur());
-            fragmentMain.setIdType(idType);
             getSupportFragmentManager().beginTransaction().add(R.id.recycler_container, fragmentMain).commit();
             pgrsLoading.setVisibility(View.INVISIBLE);
 
@@ -154,7 +155,6 @@ public class activity_home extends AppCompatActivity implements LocationListener
             fragmentMain.setLatitude(latitude);
             fragmentMain.setLongitude(longitude);
             fragmentMain.setIdUtilisateur(utilisateur.getIdUtilisateur());
-            fragmentMain.setIdType(idType);
         }
     }
     public void updateOffer(MyOffer myOffer){
@@ -265,22 +265,26 @@ public class activity_home extends AppCompatActivity implements LocationListener
         setTitle("Offre");
         deleteMyOffer();
         pgrsLoading.setVisibility(View.VISIBLE);
+        latitude=0.0;
+        longitude=0.0;
         getLocation();
+
 
 
     }
 
     public void OnclickImage(View v){
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, 0);
-
-
+        if(create){
+            Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+            photoPickerIntent.setType("image/*");
+            startActivityForResult(photoPickerIntent, 0);
+        }
     }
     @SuppressLint("MissingPermission")
     public void getLocation() {
         pb=findViewById(R.id.pgrBar);
         pb.setVisibility(View.VISIBLE);
+
         final Handler h = new Handler();
         final Runnable runnable = new Runnable() {
             @Override
@@ -352,13 +356,19 @@ public class activity_home extends AppCompatActivity implements LocationListener
 
     public void OnClickAdd(View v){
 
-        Address a = convertAddress(editAdress.getText().toString()+","+editPostal.getText().toString());
-        if(create){
-            addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),getStrDateFromDatePicker(datePicker),editDesc.getText().toString(),getIdTyoeFromText(),utilisateur.getIdUtilisateur());
+        if(editPostal.getText().toString().isEmpty()||editAdress.getText().toString().isEmpty()||editDesc.getText().toString().isEmpty()||path.isEmpty()){
+            Toast.makeText(instance, "Tous les champs doivent être renseignés", Toast.LENGTH_SHORT).show();
         }
         else{
-            ServiceUpdateOffer.updateOffer(this,myOffer.getId(),editDesc.getText().toString(),getStrDateFromDatePicker(datePicker),myOffer.getIdType(),a.getLongitude(),a.getLatitude());
+            Address a = convertAddress(editAdress.getText().toString()+","+editPostal.getText().toString());
+            if(create){
+                addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),getStrDateFromDatePicker(datePicker),editDesc.getText().toString(),getIdTyoeFromText(),utilisateur.getIdUtilisateur());
+            }
+            else{
+                ServiceUpdateOffer.updateOffer(this,myOffer.getId(),editDesc.getText().toString(),getStrDateFromDatePicker(datePicker),myOffer.getIdType(),a.getLongitude(),a.getLatitude());
+            }
         }
+
     }
 
 
@@ -536,7 +546,10 @@ public class activity_home extends AppCompatActivity implements LocationListener
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 idType = types.get(which).getIdType();
+
                 offerNav();
+                setTitle("Offre ("+types.get(which).getNom()+")");
+                fragmentMain.setIdType(types.get(which).getIdType());
                 fragmentMain.executeHttpRequestWithRetrofit();
 
             }

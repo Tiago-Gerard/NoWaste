@@ -63,7 +63,8 @@
             android:layout_height="54dp"
             android:layout_above="@+id/txvDate"
             android:layout_alignParentStart="true"
-            android:text="I've got some tomatoes still available 2 days feel free to come take them i give it free" />
+            android:text="I've got some tomatoes still available 2 days feel free to come take them i give it free"
+            android:textSize="18sp" />
 
     </RelativeLayout>
 

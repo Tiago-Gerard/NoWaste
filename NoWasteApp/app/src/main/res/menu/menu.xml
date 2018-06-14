@@ -10,5 +10,5 @@
         android:title="Créer une offre" />
     <item
         android:id="@+id/change_acc"
-        android:title="Changer mon compte" />
+        android:title="Modifier mon compte" />
 </menu>

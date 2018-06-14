@@ -372,10 +372,7 @@ function createUser($nom,$prenom,$numero,$email){
     $requestCreate->bindParam(':nom',$nom,PDO::PARAM_STR);
     $requestCreate->bindParam(':prenom',$prenom,PDO::PARAM_STR);
     $requestCreate->bindParam(':numero',$numero,PDO::PARAM_STR);
-    $requestCreate->execute();
-    
-    
-    
+    $requestCreate->execute();   
 }
 
 

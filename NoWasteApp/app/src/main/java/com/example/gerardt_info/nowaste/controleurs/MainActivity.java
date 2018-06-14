@@ -15,6 +15,7 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.gerardt_info.nowaste.Data.ServiceCreateUser;
 import com.example.gerardt_info.nowaste.Data.ServiceGetUser;
@@ -26,7 +27,7 @@ import com.example.gerardt_info.nowaste.models.Utilisateur;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ServiceGetUser.Callbacks, ServiceCreateUser.Callbacks {
-    String number="";
+    String number=null;
     static int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE=1;
     EditText editNumero;
     EditText editPrenom;
@@ -87,8 +88,14 @@ public class MainActivity extends AppCompatActivity implements ServiceGetUser.Ca
         }
         }
         public void Onclick(View v){
+        if(number.isEmpty()){
+            Toast.makeText(this, "L'application n'arrive pas à récuperer votre numéro", Toast.LENGTH_LONG).show();
+        }
+        else{
             ServiceCreateUser.createUser(this,editPrenom.getText().toString(),editNom.getText().toString(),editEmail.getText().toString(),editNumero.getText().toString());
             ServiceGetUser.getUser(this,number,number);
+        }
+
         }
     @SuppressLint("MissingPermission")
     @Override

@@ -14,6 +14,7 @@
 
     <EditText
         android:id="@+id/editDesc"
+        android:maxLength="60"
         android:layout_width="178dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -105,6 +106,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@+id/editAdress"
-        android:text="Date de paremption" />
+        android:text="Date de peremption" />
 
 </RelativeLayout>
