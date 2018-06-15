@@ -2,7 +2,7 @@
 /*
 	Projet:			Eat@School - Projet réalisé dans le cadre du module 306 - Réaliser un petit projet informatique
 	
-	Page: 			index.php
+	Page: 			functions.inc.php
 	Description:            Retourne l'Utilisateur en fonction des infomation envoyer en header
  	
 	Auteur:			Tiago Gerard

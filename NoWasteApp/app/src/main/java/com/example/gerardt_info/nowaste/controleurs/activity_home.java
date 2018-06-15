@@ -380,20 +380,21 @@ public class activity_home extends AppCompatActivity implements LocationListener
     //listener de l'évenement onclick du bouton pour ajouter une offre
     public void OnClickAdd(View v){
 
-        //verifie si tous les champs sont remplis
-        if(editPostal.getText().toString().isEmpty()||editAdress.getText().toString().isEmpty()||editDesc.getText().toString().isEmpty()||path.isEmpty()){
-            Toast.makeText(instance, "Tous les champs doivent être renseignés", Toast.LENGTH_SHORT).show();
-        }
-        else{
+
             Address a = convertAddress(editAdress.getText().toString()+","+editPostal.getText().toString());
             if(create){
-                addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),getStrDateFromDatePicker(datePicker),editDesc.getText().toString(), getIdTypeFromText(),utilisateur.getIdUtilisateur());
+                //verifie si tous les champs sont remplis
+                if(editPostal.getText().toString().isEmpty()||editAdress.getText().toString().isEmpty()||editDesc.getText().toString().isEmpty()||path.isEmpty()){
+                    Toast.makeText(instance, "Tous les champs doivent être renseignés", Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    addOfferOnServeur(path,a.getLatitude(),a.getLongitude(),getStrDateFromDatePicker(datePicker),editDesc.getText().toString(), getIdTypeFromText(),utilisateur.getIdUtilisateur());
+                }
+
             }
             else{
                 ServiceUpdateOffer.updateOffer(this,myOffer.getId(),editDesc.getText().toString(),getStrDateFromDatePicker(datePicker),myOffer.getIdType(),a.getLongitude(),a.getLatitude());
             }
-        }
-
     }
 
 
